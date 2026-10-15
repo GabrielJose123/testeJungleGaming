@@ -4,9 +4,10 @@ import { resetDatabase } from "./db/store"
 import { resumePendingOrders } from "./domain/orders"
 import { controlHandlers } from "./http/control"
 import { httpHandlers } from "./http/handlers"
+import { socketHandlers } from "./realtime/socket-server"
 import { isScenario, setScenario } from "./scenarios"
 
-export const worker = setupWorker(...controlHandlers, ...httpHandlers)
+export const worker = setupWorker(...controlHandlers, ...httpHandlers, ...socketHandlers)
 
 /**
  * Liga o servidor simulado antes do primeiro render.

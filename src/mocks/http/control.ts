@@ -1,11 +1,15 @@
 import { http } from "msw"
 
+import type { AnyRealtimeEvent } from "@/api/types"
 import { isEthAmount } from "@/lib/money"
 
 import { resetDatabase } from "../db/store"
 import { expireAllSessions } from "../domain/auth"
 import { updateNft, type NftChange } from "../domain/catalog"
 import { MockApiError, assertValid } from "../domain/errors"
+import { newId } from "../domain/ids"
+import { recentEvents } from "../events"
+import { connectedSockets, disconnectAllSockets, emitRaw } from "../realtime/socket-server"
 import { getScenario, isScenario, SCENARIOS, setScenario } from "../scenarios"
 import { api, errorResponse, json, noContent, readJson } from "./route"
 
@@ -60,6 +64,40 @@ export const controlHandlers = [
       return json({ id: nft.id, version: nft.version })
     }),
   ),
+
+  /**
+   * Reenvia eventos já publicados para testar a tolerância do cliente:
+   * `duplicate` repete o último evento do recurso (mesmo eventId);
+   * `stale` reenvia o evento anterior com um eventId novo (versão antiga).
+   */
+  http.post(
+    api("/__mock/events/replay"),
+    guard(async (request) => {
+      const { mode, resourceId } = await readJson<{ mode: "duplicate" | "stale"; resourceId?: string }>(request)
+      const history = recentEvents().filter((event) => !resourceId || event.resource.id === resourceId)
+      const last = history.at(-1)
+      if (!last) throw new MockApiError(404, "NOT_FOUND", "Nenhum evento publicado para reenviar.")
+      let event: AnyRealtimeEvent = last
+      if (mode === "stale") {
+        const previous = history.slice(0, -1).filter((entry) => entry.resource.id === last.resource.id).at(-1)
+        event = previous
+          ? { ...previous, eventId: newId("evt") }
+          : ({ ...last, eventId: newId("evt"), version: last.version - 1 } as AnyRealtimeEvent)
+      }
+      emitRaw(event)
+      return json({ eventId: event.eventId, version: event.version })
+    }),
+  ),
+
+  http.post(
+    api("/__mock/socket/disconnect"),
+    guard(() => {
+      disconnectAllSockets()
+      return noContent()
+    }),
+  ),
+
+  http.get(api("/__mock/socket"), guard(() => json({ clients: connectedSockets() }))),
 
   http.post(
     api("/__mock/sessions/expire"),

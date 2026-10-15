@@ -172,9 +172,30 @@ base58 de 32–44 caracteres (Solana).
 
 ## 3. Eventos Socket.IO
 
-Conexão: `socket.io-client` com `transports: ["websocket"]`, `auth: { token }` (ou sem token para
-visitantes, que recebem apenas eventos públicos). O servidor associa o socket ao usuário e só entrega
-`order.updated` aos sockets **daquele** usuário.
+Conexão: `socket.io-client` em `VITE_SOCKET_URL` (padrão: a própria origem) com `path: "/realtime"`,
+`transports: ["websocket"]` e `auth: { token }` (sem token para visitantes, que recebem apenas eventos
+públicos). O servidor associa o socket ao usuário e só entrega `order.updated` aos sockets **daquele**
+usuário.
+
+### Transporte simulado e limitações
+
+O servidor Socket.IO simulado (`src/mocks/realtime/socket-server.ts`) roda sobre o interceptador de
+WebSocket do MSW, com `@mswjs/socket.io-binding`. O cliente é o `socket.io-client` real: o protocolo
+Engine.IO/Socket.IO trafega de verdade, só o servidor é simulado na própria página.
+
+| Limitação | Tratamento |
+| --- | --- |
+| Só WebSocket: long-polling (HTTP) não é simulado | O cliente usa `transports: ["websocket"]` |
+| O MSW remove `/socket.io/` do pathname antes de casar o handler; o que sobra (`/`) colidiria com o WebSocket de HMR do Vite | Path próprio `/realtime` (o cliente e servidores reais aceitam `path`) |
+| O binding simula o handshake, mas não envia pings; o Engine.IO encerraria a conexão em ~30 s | O servidor simulado envia `ping` ("2") a cada 20 s |
+| O binding só decodifica pacotes `EVENT`; o `auth` vem no pacote `CONNECT` | O token é lido da mensagem bruta `40{...}` |
+| Sem namespaces, rooms ou acks | Roteamento por usuário em um registro próprio; o cliente não depende de acks |
+| O servidor vive na aba: cada aba tem seu próprio "servidor" | Os dados são compartilhados via `localStorage`, mas eventos não cruzam abas; o cliente reconcilia via REST ao focar e ao reconectar |
+| Pedidos pendentes dependem de timers da página | Na carga dos mocks, pedidos vencidos são liquidados e os demais reagendados |
+
+Controles para testes: `POST /api/__mock/socket/disconnect` derruba as conexões (o cliente reconecta),
+`POST /api/__mock/events/replay` reenvia duplicatas (`duplicate`) ou eventos antigos (`stale`) e
+`PATCH /api/__mock/nfts/:id` muda preço/estoque, publicando `nft.updated`.
 
 ```ts
 interface RealtimeEvent<TType, TResource, TData> {
