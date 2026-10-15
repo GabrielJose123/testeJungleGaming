@@ -8,7 +8,8 @@ import type { MockDatabase } from "./schema"
  */
 
 const STORAGE_KEY = "kurio:mock-db"
-const SCHEMA_VERSION = 1
+// 2: artes em WebP (bancos salvos com caminhos .png são descartados).
+const SCHEMA_VERSION = 2
 
 export function createSeedDatabase(): MockDatabase {
   return {

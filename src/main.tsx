@@ -1,8 +1,8 @@
 /**
- * Ponto de entrada. Os mocks (MSW) precisam subir ANTES de qualquer módulo do app:
- * o engine.io-client captura o construtor `WebSocket` ao ser avaliado, e o interceptador
- * do MSW só substitui o `WebSocket` global no `worker.start()`. Por isso o app inteiro é
- * carregado com import dinâmico depois dos mocks.
+ * Ponto de entrada. O app e os mocks (MSW) são baixados em paralelo, mas o app só é montado
+ * depois de `worker.start()`: nenhuma requisição sai antes de o servidor simulado estar pronto.
+ * O engine.io-client captura o construtor `WebSocket` ao ser avaliado, por isso o
+ * socket.io-client é importado sob demanda (src/realtime/realtime-client.ts), já com os mocks ativos.
  */
 async function enableMocks() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== "true") return
@@ -10,6 +10,5 @@ async function enableMocks() {
   await startMocks()
 }
 
-await enableMocks()
-const { mount } = await import("./bootstrap")
+const [{ mount }] = await Promise.all([import("./bootstrap"), enableMocks()])
 mount(document.getElementById("root")!)

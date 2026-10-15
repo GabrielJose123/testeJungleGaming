@@ -5,10 +5,10 @@
 import type { BlogPost, FilterOption, NftSummary, PriceRange, PromoCard } from "@/types/catalog"
 
 export const nftImages = {
-  varsity: "/assets/nfts/ape-varsity.png",
-  hoodie: "/assets/nfts/ape-hoodie.png",
-  sage: "/assets/nfts/ape-sage.png",
-  golden: "/assets/nfts/ape-golden.png",
+  varsity: "/assets/nfts/ape-varsity.webp",
+  hoodie: "/assets/nfts/ape-hoodie.webp",
+  sage: "/assets/nfts/ape-sage.webp",
+  golden: "/assets/nfts/ape-golden.webp",
 } as const
 
 export const catalogNfts: NftSummary[] = [

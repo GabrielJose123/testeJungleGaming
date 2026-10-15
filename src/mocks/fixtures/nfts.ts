@@ -22,10 +22,10 @@ export const collections: CollectionRecord[] = [
 ]
 
 const images = {
-  varsity: "/assets/nfts/ape-varsity.png",
-  hoodie: "/assets/nfts/ape-hoodie.png",
-  sage: "/assets/nfts/ape-sage.png",
-  golden: "/assets/nfts/ape-golden.png",
+  varsity: "/assets/nfts/ape-varsity.webp",
+  hoodie: "/assets/nfts/ape-hoodie.webp",
+  sage: "/assets/nfts/ape-sage.webp",
+  golden: "/assets/nfts/ape-golden.webp",
 } as const
 type ImageKey = keyof typeof images
 

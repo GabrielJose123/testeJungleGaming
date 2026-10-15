@@ -5,6 +5,11 @@ import type { NftSummary } from "@/types/catalog"
 
 import { FavoriteButton } from "./favorite-button"
 
+/** As artes locais têm uma variante de 400 px (`-400.webp`) para os cards. */
+function artSrcSet(image: string) {
+  return image.endsWith(".webp") ? `${image.replace(/\.webp$/, "-400.webp")} 400w, ${image} 800w` : undefined
+}
+
 interface NftCardProps {
   nft: NftSummary
   /** Imagens acima da dobra carregam com prioridade. */
@@ -23,6 +28,8 @@ export function NftCard({ nft, priority = false, className }: NftCardProps) {
         <div className="relative">
           <img
             src={nft.image}
+            srcSet={artSrcSet(nft.image)}
+            sizes="(min-width: 1024px) 258px, 50vw"
             alt=""
             width={250}
             height={250}

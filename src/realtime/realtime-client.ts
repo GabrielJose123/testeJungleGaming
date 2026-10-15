@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query"
-import { io, type Socket } from "socket.io-client"
+import type { Socket } from "socket.io-client"
 
 import { SOCKET_PATH, SOCKET_URL } from "@/api/config"
 import { queryKeys } from "@/api/query-keys"
@@ -14,6 +14,17 @@ import { realtimeStore } from "./realtime-store"
 export type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>
 
 let socket: RealtimeSocket | null = null
+
+/**
+ * O socket.io-client é carregado sob demanda: ele captura o `WebSocket` global ao ser avaliado,
+ * então só pode ser avaliado depois que os mocks (MSW) substituírem o `WebSocket`. Carregá-lo à parte
+ * também tira ~15 kB do caminho crítico do primeiro render.
+ */
+let ioModule: Promise<typeof import("socket.io-client")> | null = null
+function loadIo() {
+  ioModule ??= import("socket.io-client")
+  return ioModule
+}
 
 /** Socket atual (para hooks de componentes registrarem listeners próprios). */
 export function getSocket() {
@@ -40,6 +51,8 @@ export function startRealtime(queryClient: QueryClient) {
   const gate = new EventGate()
   let current: RealtimeSocket | null = null
   let hasConnectedBefore = false
+  /** Incrementa a cada open/close: um carregamento atrasado do módulo não abre socket obsoleto. */
+  let generation = 0
 
   const handleNft: ServerToClientEvents["nft.updated"] = (event) => applyNftUpdated(queryClient, gate, event)
   const handleOrder: ServerToClientEvents["order.updated"] = (event) => applyOrderUpdated(queryClient, gate, event)
@@ -55,6 +68,15 @@ export function startRealtime(queryClient: QueryClient) {
   const handleConnectError = () => realtimeStore.setConnection("reconnecting")
 
   function open() {
+    const openGeneration = ++generation
+    realtimeStore.setConnection("connecting")
+    void loadIo().then(({ io }) => {
+      if (openGeneration !== generation) return
+      connect(io)
+    })
+  }
+
+  function connect(io: typeof import("socket.io-client").io) {
     const instance: RealtimeSocket = io(SOCKET_URL, {
       path: SOCKET_PATH,
       transports: ["websocket"],
@@ -68,12 +90,12 @@ export function startRealtime(queryClient: QueryClient) {
     instance.on("connect_error", handleConnectError)
     instance.on("nft.updated", handleNft)
     instance.on("order.updated", handleOrder)
-    realtimeStore.setConnection("connecting")
     current = instance
     socket = instance
   }
 
   function close() {
+    generation++
     if (!current) return
     current.off("connect", handleConnect)
     current.off("disconnect", handleDisconnect)
