@@ -3,17 +3,15 @@ import { useState } from "react"
 
 import { isApiError } from "@/api/errors"
 import { useLogin } from "@/api/hooks/session"
-import { FieldError } from "@/components/feedback"
-import { ScreenPlaceholder } from "@/components/layout/screen-placeholder"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { PrimaryButton, SocialLogin, TextField } from "@/components/kit"
 import { errorMessage } from "@/lib/error-message"
 import { safeRedirect } from "@/session/redirects"
 
+import { AuthCard } from "./auth-card"
+
 const route = getRouteApi("/entrar")
 
-/** Login provisório (sem o layout do Figma): autentica e volta para `redirect`. */
+/** Figma: Desktop / Login (9:115) e Mobile / Login (16:1022). Autentica e volta para `redirect`. */
 export function LoginPage() {
   const search = route.useSearch()
   const router = useRouter()
@@ -23,60 +21,50 @@ export function LoginPage() {
   const fieldErrors = isApiError(login.error) ? login.error.fieldErrors : {}
 
   return (
-    <ScreenPlaceholder title="Entrar" nav="home">
+    <AuthCard mode="login" redirect={search.redirect} intro="Entre para gerenciar sua carteira, coleção e perfil de criador.">
       {search.reason === "expired" && (
-        <p role="alert" className="text-amber">
+        <p role="alert" className="w-full rounded-xs border border-brand px-3 py-2 text-body text-amber">
           Sua sessão expirou. Entre novamente para continuar de onde parou.
         </p>
       )}
       <form
         noValidate
-        className="flex flex-col gap-3"
+        className="flex w-full flex-col gap-3"
         onSubmit={(event) => {
           event.preventDefault()
-          login.mutate(
-            { email, password },
-            { onSuccess: () => router.history.push(safeRedirect(search.redirect) ?? "/") },
-          )
+          login.mutate({ email, password }, { onSuccess: () => router.history.push(safeRedirect(search.redirect) ?? "/") })
         }}
       >
-        <Label htmlFor="login-email">E-mail</Label>
-        <Input
-          id="login-email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          aria-invalid={Boolean(fieldErrors.email)}
-          aria-describedby="login-email-error"
-        />
-        <FieldError id="login-email-error" message={fieldErrors.email} />
-        <Label htmlFor="login-password">Senha</Label>
-        <Input
-          id="login-password"
+        <TextField label="E-mail" hideLabel type="email" autoComplete="email" placeholder="contato@email.com" value={email} onChange={(event) => setEmail(event.target.value)} error={fieldErrors.email} />
+        <TextField
+          label="Senha"
+          hideLabel
           type="password"
           autoComplete="current-password"
+          placeholder="Senha"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          aria-invalid={Boolean(fieldErrors.password)}
-          aria-describedby="login-password-error"
+          error={fieldErrors.password}
         />
-        <FieldError id="login-password-error" message={fieldErrors.password} />
+        <span className="self-end text-caption text-amber" title="Recuperação de senha fora do escopo da demonstração">
+          Esqueceu a senha?
+        </span>
         {login.error && !Object.keys(fieldErrors).length && (
-          <p role="alert" className="text-danger">
+          <p role="alert" className="text-body text-danger">
             {errorMessage(login.error)}
           </p>
         )}
-        <Button type="submit" disabled={login.isPending}>
+        <PrimaryButton type="submit" disabled={login.isPending} className="mt-3 h-14 rounded-xl lg:h-11 lg:rounded-xs">
           {login.isPending ? "Entrando…" : "Entrar"}
-        </Button>
+        </PrimaryButton>
       </form>
-      <p>
+      <SocialLogin />
+      <p className="text-body text-sand">
         Não tem conta?{" "}
-        <Link to="/cadastro" search={{ redirect: search.redirect }} className="text-amber underline">
+        <Link to="/cadastro" search={{ redirect: search.redirect }} className="text-amber hover:underline">
           Criar conta
         </Link>
       </p>
-    </ScreenPlaceholder>
+    </AuthCard>
   )
 }
