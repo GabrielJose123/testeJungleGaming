@@ -1,0 +1,173 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/roboto-mono/400.css";
+@import "@fontsource/roboto-mono/500.css";
+@import "@fontsource/roboto-mono/700.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens extracted from the Figma file (variables collection).
+ * See docs/design-tokens.md for the full mapping.
+ */
+@theme {
+  /* Palette (Figma: color/*) */
+  --color-ink: #140d0a;
+  --color-surface-card: #241612;
+  --color-surface-raised: #2f1d15;
+  --color-surface-dark: #38220f;
+  --color-line: #3f2319;
+  --color-line-soft: #55321f;
+  --color-brand: #d28a4c;
+  --color-brand-muted: #b39463;
+  --color-cream: #f5f1eb;
+  --color-cream-strong: #f7f3ec;
+  --color-sand: #cfb28c;
+  --color-amber: #e89b55;
+  --color-elevated: #fbfbfb;
+  --color-gray-light: #ededed;
+  --color-danger: #e5654b;
+  --color-success: #46a358;
+
+  /* Typography (Figma: font/family = Roboto Mono) */
+  --font-sans: "Roboto Mono", ui-monospace, monospace;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+
+  --text-tiny: 9px;
+  --text-tiny--line-height: 1;
+  --text-micro: 10px;
+  --text-micro--line-height: 1;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption-lg: 13px;
+  --text-caption-lg--line-height: 22px;
+  --text-body: 14px;
+  --text-body--line-height: 16px;
+  --text-body-md: 15px;
+  --text-body-md--line-height: 16px;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 16px;
+  --text-lead: 17px;
+  --text-lead--line-height: 16px;
+  --text-title: 18px;
+  --text-title--line-height: 16px;
+  --text-title-lg: 22px;
+  --text-title-lg--line-height: 16px;
+  --text-heading: 24px;
+  --text-heading--line-height: 32px;
+  --text-heading-lg: 28px;
+  --text-heading-lg--line-height: normal;
+  --text-display: 43px;
+  --text-display--line-height: 70px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-art: 15px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
+
+  /* Shadows */
+  --shadow-field: 0 0 10px rgba(10, 6, 4, 0.45);
+  --shadow-tabbar: 0 -6px 24px rgba(10, 6, 4, 0.55);
+
+  /* Layout */
+  --container-page: 1200px;
+}
+
+/* shadcn/ui semantic tokens, mapped onto the Figma palette (dark only). */
+@theme inline {
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+}
+
+:root {
+  color-scheme: dark;
+  --radius: 6px;
+  --background: var(--color-ink);
+  --foreground: var(--color-cream);
+  --card: var(--color-surface-card);
+  --card-foreground: var(--color-cream);
+  --popover: var(--color-surface-card);
+  --popover-foreground: var(--color-cream);
+  --primary: var(--color-brand);
+  --primary-foreground: var(--color-ink);
+  --secondary: var(--color-surface-dark);
+  --secondary-foreground: var(--color-cream);
+  --muted: var(--color-surface-raised);
+  --muted-foreground: var(--color-sand);
+  --accent: var(--color-surface-raised);
+  --accent-foreground: var(--color-amber);
+  --destructive: var(--color-danger);
+  --border: var(--color-line);
+  --input: var(--color-line-soft);
+  --ring: var(--color-amber);
+}
+
+@utility bg-card-gradient {
+  background-image: linear-gradient(140deg, var(--color-surface-card) 12%, var(--color-surface-raised) 107%);
+}
+
+@utility bg-brand-gradient {
+  background-image: linear-gradient(137deg, rgba(210, 138, 76, 0.45) 25%, var(--color-brand) 100%);
+}
+
+@utility bg-featured-gradient {
+  background-image: linear-gradient(to bottom, rgba(210, 138, 76, 0.1), rgba(210, 138, 76, 0.03));
+}
+
+@utility bg-bubble-gradient {
+  background-image: linear-gradient(145deg, rgba(210, 138, 76, 0.3) 46%, rgba(210, 138, 76, 0) 103%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-amber;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
