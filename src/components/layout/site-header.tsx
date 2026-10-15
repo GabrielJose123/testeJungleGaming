@@ -8,13 +8,15 @@ interface SiteHeaderProps {
   /** Item ativo da navegação: "home" (Início) ou "market" (Mercado). */
   active: NavSection
   cartCount: number
+  /** Nome do usuário logado: o botão "Entrar" vira um atalho para o perfil. */
+  userName?: string
   /** Linha fina sob o cabeçalho; as telas do fluxo de mercado usam o cabeçalho sem ela. */
   withDivider?: boolean
   className?: string
 }
 
 /** Figma: "Header With Divider" / "Header Row" (desktop, 1200 px). */
-export function SiteHeader({ active, cartCount, withDivider = false, className }: SiteHeaderProps) {
+export function SiteHeader({ active, cartCount, userName, withDivider = false, className }: SiteHeaderProps) {
   return (
     <header className={cn("hidden w-full lg:block", className)}>
       <div className="flex w-full items-start justify-between">
@@ -47,11 +49,12 @@ export function SiteHeader({ active, cartCount, withDivider = false, className }
           </Link>
 
           <Link
-            to="/entrar"
-            className="flex h-[35px] w-[100px] items-center justify-center gap-1 rounded-sm bg-brand text-body-lg leading-none font-medium text-ink transition-colors hover:bg-amber"
+            to={userName ? "/perfil" : "/entrar"}
+            aria-label={userName ? `Perfil de ${userName}` : undefined}
+            className="flex h-[35px] min-w-[100px] items-center justify-center gap-1 rounded-sm bg-brand px-2 text-body-lg leading-none font-medium text-ink transition-colors hover:bg-amber"
           >
             <img src="/assets/icons/logout.svg" alt="" width={18} height={17} className="size-5 p-[2px]" />
-            Entrar
+            {userName ? userName.split(" ")[0] : "Entrar"}
           </Link>
         </div>
       </div>

@@ -1,12 +1,27 @@
 import { PageShell } from "./page-shell"
 import type { NavSection } from "./site-header"
 
-/** Rota provisória até a tela correspondente ser implementada. */
-export function ScreenPlaceholder({ title, nav = "market" }: { title: string; nav?: NavSection }) {
+/**
+ * Página provisória (sem layout do Figma): título + conteúdo funcional mínimo.
+ * Será substituída pela tela final quando o Figma estiver disponível.
+ */
+export function ScreenPlaceholder({
+  title,
+  nav = "market",
+  children,
+}: {
+  title: string
+  nav?: NavSection
+  children?: React.ReactNode
+}) {
   return (
     <PageShell nav={nav}>
-      <h1 className="py-24 text-center text-heading font-bold text-cream">{title}</h1>
-      <p className="text-center text-body text-sand">Tela em construção.</p>
+      <section aria-labelledby="page-title" className="mx-auto flex w-full max-w-xl flex-col gap-4 py-12 text-body leading-6 text-sand">
+        <h1 id="page-title" className="text-heading font-bold text-cream">
+          {title}
+        </h1>
+        {children ?? <p>Tela em construção.</p>}
+      </section>
     </PageShell>
   )
 }

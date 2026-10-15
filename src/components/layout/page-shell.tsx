@@ -1,4 +1,5 @@
-import { placeholderCartCount } from "@/lib/placeholder-data"
+import { useCartCount } from "@/api/hooks/cart"
+import { useSession } from "@/session/use-session"
 import { cn } from "@/lib/utils"
 
 import { MobileTabBar, type MobileTab } from "./mobile-tab-bar"
@@ -19,9 +20,11 @@ interface PageShellProps {
  * Moldura das telas: 1440 px com 120 px de margem lateral no desktop (Figma) e 24 px no mobile.
  */
 export function PageShell({ nav, headerDivider = false, mobileTab = "home", children, className }: PageShellProps) {
+  const cartCount = useCartCount()
+  const userName = useSession()?.user.name
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[1440px] flex-col px-6 pt-10 pb-[150px] lg:px-[120px] lg:py-6">
-      <SiteHeader active={nav} cartCount={placeholderCartCount} withDivider={headerDivider} className="mb-8" />
+      <SiteHeader active={nav} cartCount={cartCount} userName={userName} withDivider={headerDivider} className="mb-8" />
       <main id="conteudo" className={cn("flex w-full flex-1 flex-col", className)}>
         {children}
       </main>

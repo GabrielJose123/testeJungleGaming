@@ -5,6 +5,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router"
 
 import { createQueryClient } from "./api/query-client"
 import { RealtimeProvider } from "./realtime/realtime-provider"
+import { parseSearch, stringifySearch } from "./lib/search-serialization"
 import { routeTree } from "./routeTree.gen"
 import { bindSessionLifecycle } from "./session/session-lifecycle"
 import "./index.css"
@@ -12,7 +13,16 @@ import "./index.css"
 const queryClient = createQueryClient()
 bindSessionLifecycle(queryClient)
 
-const router = createRouter({ routeTree, defaultPreload: "intent", scrollRestoration: true })
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+  defaultPreload: "intent",
+  // O TanStack Query já controla frescor; o router não deve cachear loaders por conta própria.
+  defaultPreloadStaleTime: 0,
+  scrollRestoration: true,
+  parseSearch,
+  stringifySearch,
+})
 
 declare module "@tanstack/react-router" {
   interface Register {

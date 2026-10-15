@@ -7,9 +7,9 @@ export interface NftSummary {
   image: string
   priceEth: EthAmount
   /** Preço anterior, exibido ao lado do atual quando há redução. */
-  previousPriceEth?: EthAmount
+  previousPriceEth?: EthAmount | null
   /** Selo curto sobre a arte (ex.: "RARO"). */
-  badge?: string
+  badge?: string | null
 }
 
 export interface FilterOption {

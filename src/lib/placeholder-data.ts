@@ -60,16 +60,18 @@ export const networkFilters: FilterOption[] = [
 
 export const priceBounds: PriceRange = { min: 0.02, max: 12.3 }
 
+/** Rótulos das abas e da ordenação; os ids são os valores aceitos pela API (`tab`, `sort`). */
 export const catalogTabs = [
-  { id: "todos", label: "Todos os NFTs" },
-  { id: "novos", label: "Novos lançamentos" },
-  { id: "em-alta", label: "Em alta" },
+  { id: "all", label: "Todos os NFTs" },
+  { id: "new", label: "Novos lançamentos" },
+  { id: "trending", label: "Em alta" },
 ] as const
 
 export const sortOptions = [
-  { id: "recentes", label: "Listados recentemente" },
-  { id: "menor-preco", label: "Menor preço" },
-  { id: "maior-preco", label: "Maior preço" },
+  { id: "recent", label: "Listados recentemente" },
+  { id: "price-asc", label: "Menor preço" },
+  { id: "price-desc", label: "Maior preço" },
+  { id: "name-asc", label: "Nome (A–Z)" },
 ] as const
 
 export const promoCards: PromoCard[] = [
@@ -124,4 +126,3 @@ export const blogPosts: BlogPost[] = [
   },
 ]
 
-export const placeholderCartCount = 6
