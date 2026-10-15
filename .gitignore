@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 .shot.tmp.mjs
 .*.tmp.mjs
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Lighthouse (relatórios locais; a rodada oficial será versionada na entrega final)
+/lighthouse/reports/
