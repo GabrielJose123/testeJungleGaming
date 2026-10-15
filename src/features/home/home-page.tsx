@@ -2,7 +2,8 @@ import { getRouteApi } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
 import { useNfts } from "@/api/hooks/catalog"
-import { ErrorState, LoadingState } from "@/components/feedback"
+import { ErrorState } from "@/components/feedback"
+import { Shimmer } from "@/components/kit"
 import { PageShell } from "@/components/layout/page-shell"
 import { NftCard } from "@/components/nft/nft-card"
 import { Pagination } from "@/components/pagination"
@@ -133,7 +134,20 @@ export function HomePage() {
             </div>
 
             <div aria-live="polite" aria-busy={catalog.isFetching} className="w-full">
-              {catalog.isPending && <LoadingState label="Carregando catálogo…" />}
+              {catalog.isPending && (
+                <>
+                  <span className="sr-only">Carregando catálogo…</span>
+                  <ul aria-hidden className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-[repeat(3,258px)] lg:justify-between lg:gap-y-[72px]">
+                    {Array.from({ length: 9 }, (_, index) => (
+                      <li key={index} className="flex flex-col gap-3">
+                        <Shimmer className="aspect-square w-full rounded-3xl lg:h-[300px] lg:rounded-none" />
+                        <Shimmer className="h-4 w-3/4" />
+                        <Shimmer className="h-4 w-1/3" />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
               {catalog.isError && <ErrorState error={catalog.error} onRetry={() => void catalog.refetch()} />}
               {catalog.data && catalog.data.items.length === 0 && (
                 <p className="text-body text-sand">Nenhum NFT encontrado com esses filtros.</p>
