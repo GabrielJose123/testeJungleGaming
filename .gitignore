@@ -32,4 +32,3 @@ dist-ssr
 /playwright/.cache/
 
 # Lighthouse (relatórios locais; a rodada oficial será versionada na entrega final)
-/lighthouse/reports/

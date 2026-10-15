@@ -1,0 +1,304 @@
+{
+  "environment": {
+    "date": "2026-10-15T16:29:09.024Z",
+    "lighthouse": "13.5.0",
+    "chromeLauncher": "1.2.2",
+    "chromium": "chromium 156.0.8078.4",
+    "node": "v24.19.0",
+    "os": "Windows_NT 10.0.19045 (x64)",
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12400F",
+    "memoryGb": 32,
+    "target": "http://localhost:4174 (vite preview do build:demo, mocks MSW no cenário padrão)",
+    "runsPerProfile": 3,
+    "throttling": {
+      "mobile": "padrão Lighthouse: emulação Moto G Power, 4G lento simulado (150 ms RTT, 1,6 Mbps), CPU 4×",
+      "desktop": "preset desktop-config: 40 ms RTT, 10 Mbps, sem lentidão de CPU"
+    }
+  },
+  "targets": {
+    "performance": 90,
+    "accessibility": 95,
+    "best-practices": 95,
+    "seo": 90
+  },
+  "summary": [
+    {
+      "page": "inicio",
+      "profile": "mobile",
+      "runs": 3,
+      "median": {
+        "performance": 79,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4581,
+        "cls": 0.005,
+        "tbtMs": 129
+      },
+      "belowTarget": [
+        "performance"
+      ]
+    },
+    {
+      "page": "inicio",
+      "profile": "desktop",
+      "runs": 3,
+      "median": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1275,
+        "cls": 0.011,
+        "tbtMs": 0
+      },
+      "belowTarget": []
+    },
+    {
+      "page": "detalhe",
+      "profile": "mobile",
+      "runs": 3,
+      "median": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4375,
+        "cls": 0,
+        "tbtMs": 97
+      },
+      "belowTarget": [
+        "performance"
+      ]
+    },
+    {
+      "page": "detalhe",
+      "profile": "desktop",
+      "runs": 3,
+      "median": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1267,
+        "cls": 0.003,
+        "tbtMs": 0
+      },
+      "belowTarget": []
+    }
+  ],
+  "results": [
+    {
+      "page": "inicio",
+      "profile": "mobile",
+      "run": 1,
+      "scores": {
+        "performance": 80,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4449,
+        "cls": 0.005,
+        "tbtMs": 103
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "inicio",
+      "profile": "mobile",
+      "run": 2,
+      "scores": {
+        "performance": 79,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4631,
+        "cls": 0.005,
+        "tbtMs": 132
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "inicio",
+      "profile": "mobile",
+      "run": 3,
+      "scores": {
+        "performance": 79,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4581,
+        "cls": 0.005,
+        "tbtMs": 129
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "inicio",
+      "profile": "desktop",
+      "run": 1,
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1275,
+        "cls": 0.011,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "inicio",
+      "profile": "desktop",
+      "run": 2,
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1285,
+        "cls": 0.011,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "inicio",
+      "profile": "desktop",
+      "run": 3,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1232,
+        "cls": 0.011,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "mobile",
+      "run": 1,
+      "scores": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4375,
+        "cls": 0,
+        "tbtMs": 96
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "mobile",
+      "run": 2,
+      "scores": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4375,
+        "cls": 0,
+        "tbtMs": 100
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "mobile",
+      "run": 3,
+      "scores": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 4375,
+        "cls": 0,
+        "tbtMs": 97
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "desktop",
+      "run": 1,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1245,
+        "cls": 0.003,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "desktop",
+      "run": 2,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1272,
+        "cls": 0.003,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    },
+    {
+      "page": "detalhe",
+      "profile": "desktop",
+      "run": 3,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcpMs": 1267,
+        "cls": 0.003,
+        "tbtMs": 0
+      },
+      "runtimeError": null
+    }
+  ]
+}
