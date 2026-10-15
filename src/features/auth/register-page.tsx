@@ -3,70 +3,69 @@ import { useState } from "react"
 
 import { isApiError } from "@/api/errors"
 import { useRegister } from "@/api/hooks/session"
-import { FieldError } from "@/components/feedback"
-import { ScreenPlaceholder } from "@/components/layout/screen-placeholder"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { PrimaryButton, SocialLogin, TextField } from "@/components/kit"
 import { errorMessage } from "@/lib/error-message"
 import { safeRedirect } from "@/session/redirects"
 
+import { AuthCard } from "./auth-card"
+
 const route = getRouteApi("/cadastro")
 
-const fields = [
-  { name: "name", label: "Nome", type: "text", autoComplete: "name" },
-  { name: "email", label: "E-mail", type: "email", autoComplete: "email" },
-  { name: "password", label: "Senha", type: "password", autoComplete: "new-password" },
-] as const
-
-/** Cadastro provisório: validação e conflito (409) vêm da API. */
+/** Figma: Desktop / Cadastro (9:1022) e Mobile / Cadastro (16:1228). Validação e conflito (409) vêm da API. */
 export function RegisterPage() {
   const search = route.useSearch()
   const router = useRouter()
   const register = useRegister()
-  const [values, setValues] = useState({ name: "", email: "", password: "" })
+  const [values, setValues] = useState({ name: "", email: "", password: "", confirm: "" })
+  const [mismatch, setMismatch] = useState(false)
   const fieldErrors = isApiError(register.error) ? register.error.fieldErrors : {}
+  const set = (name: keyof typeof values) => (event: React.ChangeEvent<HTMLInputElement>) => setValues((current) => ({ ...current, [name]: event.target.value }))
 
   return (
-    <ScreenPlaceholder title="Criar conta" nav="home">
+    <AuthCard mode="register" redirect={search.redirect} intro="Criar perfil de colecionador">
       <form
         noValidate
-        className="flex flex-col gap-3"
+        className="flex w-full flex-col gap-3"
         onSubmit={(event) => {
           event.preventDefault()
-          register.mutate(values, { onSuccess: () => router.history.push(safeRedirect(search.redirect) ?? "/") })
+          if (values.password !== values.confirm) {
+            setMismatch(true)
+            return
+          }
+          setMismatch(false)
+          const { confirm: _confirm, ...body } = values
+          register.mutate(body, { onSuccess: () => router.history.push(safeRedirect(search.redirect) ?? "/") })
         }}
       >
-        {fields.map((field) => (
-          <div key={field.name} className="flex flex-col gap-1.5">
-            <Label htmlFor={`register-${field.name}`}>{field.label}</Label>
-            <Input
-              id={`register-${field.name}`}
-              type={field.type}
-              autoComplete={field.autoComplete}
-              value={values[field.name]}
-              onChange={(event) => setValues((current) => ({ ...current, [field.name]: event.target.value }))}
-              aria-invalid={Boolean(fieldErrors[field.name])}
-              aria-describedby={`register-${field.name}-error`}
-            />
-            <FieldError id={`register-${field.name}-error`} message={fieldErrors[field.name]} />
-          </div>
-        ))}
+        <TextField label="Nome de usuário" hideLabel autoComplete="name" placeholder="Nome de usuário" value={values.name} onChange={set("name")} error={fieldErrors.name} />
+        <TextField label="E-mail" hideLabel type="email" autoComplete="email" placeholder="Digite seu e-mail" value={values.email} onChange={set("email")} error={fieldErrors.email} />
+        <TextField label="Senha" hideLabel type="password" autoComplete="new-password" placeholder="Senha" value={values.password} onChange={set("password")} error={fieldErrors.password} />
+        <TextField
+          label="Confirmar senha"
+          hideLabel
+          type="password"
+          autoComplete="new-password"
+          placeholder="Confirmar senha"
+          value={values.confirm}
+          onChange={set("confirm")}
+          error={mismatch ? "As senhas não coincidem." : undefined}
+        />
         {register.error && !Object.keys(fieldErrors).length && (
-          <p role="alert" className="text-danger">
+          <p role="alert" className="text-body text-danger">
             {errorMessage(register.error)}
           </p>
         )}
-        <Button type="submit" disabled={register.isPending}>
-          {register.isPending ? "Criando…" : "Criar conta"}
-        </Button>
+        <PrimaryButton type="submit" disabled={register.isPending} className="mt-5 h-14 rounded-xl lg:h-11 lg:rounded-xs">
+          {register.isPending ? "Criando…" : "Criar perfil"}
+        </PrimaryButton>
       </form>
-      <p>
-        Já tem conta?{" "}
-        <Link to="/entrar" search={{ redirect: search.redirect }} className="text-amber underline">
-          Entrar
+      <SocialLogin />
+      <p className="text-body text-sand">
+        Já tem uma conta?{" "}
+        <Link to="/entrar" search={{ redirect: search.redirect }} className="text-amber hover:underline">
+          Entre
         </Link>
       </p>
-    </ScreenPlaceholder>
+    </AuthCard>
   )
 }
