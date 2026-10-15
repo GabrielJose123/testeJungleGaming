@@ -4,5 +4,12 @@
   "rules": {
     "react/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+  },
+  "ignorePatterns": ["src/routeTree.gen.ts", "public/mockServiceWorker.js"],
+  "overrides": [
+    {
+      "files": ["src/components/ui/**", "src/routes/**"],
+      "rules": { "react/only-export-components": "off" }
+    }
+  ]
 }
