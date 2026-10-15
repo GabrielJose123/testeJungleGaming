@@ -49,7 +49,22 @@ function authenticate(entry: ClientEntry, raw: string) {
   }
 }
 
+/**
+ * Um socket fechado ainda no handshake não dispara "close" no interceptador:
+ * descarta do registro qualquer conexão cujo WebSocket já está CLOSED.
+ */
+function prune() {
+  for (const [id, entry] of clients) {
+    const socket = (entry.connection.client as unknown as { socket?: WebSocket }).socket
+    if (socket && socket.readyState === WebSocket.CLOSED) {
+      clearInterval(entry.heartbeat)
+      clients.delete(id)
+    }
+  }
+}
+
 function deliver(event: AnyRealtimeEvent) {
+  prune()
   for (const entry of clients.values()) {
     if (event.type === "order.updated" && event.data.userId !== entry.userId) continue
     entry.io.client.emit(event.type, event)
@@ -66,7 +81,10 @@ export const socketHandlers = [
       connection,
       io: toSocketIo(connection),
       userId: null,
-      heartbeat: setInterval(() => connection.client.send("2"), PING_INTERVAL_MS),
+      heartbeat: setInterval(() => {
+        prune()
+        if (clients.has(connection.client.id)) connection.client.send("2")
+      }, PING_INTERVAL_MS),
     }
     clients.set(connection.client.id, entry)
 
@@ -91,5 +109,6 @@ export function disconnectAllSockets() {
 }
 
 export function connectedSockets() {
+  prune()
   return [...clients.values()].map((entry) => ({ id: entry.connection.client.id, userId: entry.userId }))
 }
