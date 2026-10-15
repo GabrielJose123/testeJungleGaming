@@ -42,10 +42,6 @@ function Radio({ checked }: { checked: boolean }) {
   )
 }
 
-/**
- * Figma: Desktop / Pagamento (11:2862) e Mobile / Pagamento com carteira (16:748).
- * Fluxo: dados → carteira e rede → revisão (cotação) → confirmação idempotente.
- */
 export function CheckoutPage() {
   const session = useSession()
   const navigate = useNavigate()
@@ -164,7 +160,6 @@ export function CheckoutPage() {
                   className="sr-only"
                   checked={walletId === entry.id}
                   onChange={() => {
-                    // Trocar de carteira invalida a revisão atual.
                     setWalletId(entry.id)
                     setQuote(null)
                   }}
@@ -204,7 +199,6 @@ export function CheckoutPage() {
                   className="sr-only"
                   checked={network === option}
                   onChange={() => {
-                    // A taxa depende da rede: a revisão precisa ser refeita.
                     setNetwork(option)
                     setQuote(null)
                   }}

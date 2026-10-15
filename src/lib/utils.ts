@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { extendTailwindMerge } from "tailwind-merge"
 
-/** Escala tipográfica customizada (src/index.css) — sem isso o twMerge confunde `text-body` com cor. */
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {

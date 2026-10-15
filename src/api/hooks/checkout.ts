@@ -15,14 +15,12 @@ import { isApiError, isTransportFailure } from "../errors"
 import { queryKeys } from "../query-keys"
 import { TERMINAL_ORDER_STATUSES, type CreateOrderRequest, type Network, type Order, type Quote } from "../types"
 
-/** Gera a cotação usada na revisão. É a referência de valores para criar o pedido. */
 export function useCreateQuote() {
   const queryClient = useQueryClient()
   const userId = useCurrentUserId()
   return useMutation({
     mutationFn: (network: Network) => quotesApi.create({ network }),
     onError: (error) => {
-      // Estoque/limite mudou: o carrinho precisa refletir o estado atual.
       if (isApiError(error) && error.status === 409 && userId) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.private.cart(userId) })
       }
@@ -30,7 +28,6 @@ export function useCreateQuote() {
   })
 }
 
-/** Cotação recalculada pelo servidor num 409 QUOTE_STALE (exige nova confirmação). */
 export function staleQuoteFrom(error: unknown): Quote | null {
   if (!isApiError(error, "QUOTE_STALE")) return null
   const details = error.details as { quote?: Quote } | undefined
@@ -39,10 +36,6 @@ export function staleQuoteFrom(error: unknown): Quote | null {
 
 const ORDER_RETRIES = 2
 
-/**
- * Cria o pedido com Idempotency-Key. Repetições automáticas acontecem só quando não houve
- * resposta (rede/timeout) e reusam a mesma chave: o servidor devolve o mesmo pedido.
- */
 export function useCreateOrder() {
   const queryClient = useQueryClient()
   const userId = useCurrentUserId()
@@ -71,10 +64,6 @@ export function useCreateOrder() {
 
 const settledOrders = new Set<string>()
 
-/**
- * Efeitos de um pedido que chegou a um estado final — executados uma única vez por versão,
- * venham do polling, da resposta REST ou do evento `order.updated`.
- */
 export async function handleOrderSettled(queryClient: QueryClient, userId: string, order: Pick<Order, "id" | "status" | "version">) {
   if (!TERMINAL_ORDER_STATUSES.includes(order.status)) return
   const marker = `${order.id}@${order.version}`
@@ -87,7 +76,6 @@ export async function handleOrderSettled(queryClient: QueryClient, userId: strin
 
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: queryKeys.private.pendingOrders(userId) }),
-    // Confirmado: o servidor removeu do carrinho os itens comprados e baixou o estoque.
     order.status === "confirmed" && queryClient.invalidateQueries({ queryKey: queryKeys.private.cart(userId) }),
     order.status === "confirmed" && queryClient.invalidateQueries({ queryKey: queryKeys.nfts.all() }),
   ])
@@ -95,7 +83,6 @@ export async function handleOrderSettled(queryClient: QueryClient, userId: strin
 
 const PENDING_POLL_MS = 5000
 
-/** Pedido por id. Enquanto `pending`, faz polling (fallback do socket); estados finais param. */
 export function useOrder(orderId: string | null | undefined) {
   const queryClient = useQueryClient()
   const userId = useCurrentUserId()
@@ -114,7 +101,6 @@ export function useOrder(orderId: string | null | undefined) {
   return query
 }
 
-/** Pedidos pendentes do usuário no servidor (recuperação mesmo sem o id local). */
 export function usePendingOrders() {
   const userId = useCurrentUserId()
   return useQuery({
@@ -125,7 +111,6 @@ export function usePendingOrders() {
   })
 }
 
-/** Retoma o acompanhamento do pedido pendente salvo neste navegador. */
 export function useResumePendingOrder() {
   const userId = useCurrentUserId()
   const pending = userId ? getPendingOrder(userId) : null

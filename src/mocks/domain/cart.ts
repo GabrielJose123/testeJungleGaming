@@ -36,7 +36,6 @@ function touch(cart: CartRecord) {
   cart.updatedAt = new Date().toISOString()
 }
 
-/** Projeta o registro no contrato público, com preço/estoque atuais e `issues`. */
 export function toCartDto(cart: CartRecord, data: MockDatabase = db(), now = new Date()): Cart {
   const items: CartItem[] = []
   for (const line of cart.lines) {
@@ -93,7 +92,6 @@ function validateQuantity(quantity: unknown): asserts quantity is number {
   }
 }
 
-/** Garante que a quantidade cabe na edição; lança 409 com o motivo. */
 export function assertEditionCapacity(nftId: string, editionId: string, quantity: number, data: MockDatabase) {
   const nft = requireNft(nftId, data)
   const edition = nft.editions.find((entry) => entry.id === editionId)
@@ -145,7 +143,6 @@ export function updateItem(owner: CartOwner, itemId: string, body: { quantity?: 
     const cart = ensureCart(owner, data)
     const line = cart.lines.find((entry) => entry.id === itemId)
     if (!line) throw notFound("NOT_FOUND", "Item não está no carrinho.")
-    // Diminuir é sempre permitido (resolve QUANTITY_EXCEEDS_AVAILABLE); aumentar respeita o estoque.
     if (quantity > line.quantity) assertEditionCapacity(line.nftId, line.editionId, quantity, data)
     line.quantity = quantity
     touch(cart)
@@ -192,10 +189,6 @@ export function removeCoupon(owner: CartOwner): Cart {
   })
 }
 
-/**
- * Mescla o carrinho do visitante no do usuário (login/cadastro): soma quantidades,
- * limitadas pelo estoque e pelo máximo por pedido, e descarta o carrinho do visitante.
- */
 export function mergeGuestCart(guestCartId: string | undefined, userId: string) {
   if (!guestCartId) return
   mutate((data) => {
@@ -217,7 +210,6 @@ export function mergeGuestCart(guestCartId: string | undefined, userId: string) 
   })
 }
 
-/** Remove do carrinho do usuário apenas as quantidades compradas. */
 export function removePurchased(userId: string, purchased: Array<{ nftId: string; editionId: string; quantity: number }>, data: MockDatabase) {
   const cart = data.carts.find((entry) => entry.userId === userId)
   if (!cart) return

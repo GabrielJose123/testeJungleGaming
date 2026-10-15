@@ -11,7 +11,6 @@ import { AuthCard } from "./auth-card"
 
 const route = getRouteApi("/entrar")
 
-/** Figma: Desktop / Login (9:115) e Mobile / Login (16:1022). Autentica e volta para `redirect`. */
 export function LoginPage() {
   const search = route.useSearch()
   const router = useRouter()

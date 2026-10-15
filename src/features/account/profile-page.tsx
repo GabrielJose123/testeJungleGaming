@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils"
 
 import { AccountLayout } from "./account-layout"
 
-/** Figma: Desktop / Perfil do colecionador (9:1238). */
 export function ProfilePage() {
   const profile = useProfile()
 

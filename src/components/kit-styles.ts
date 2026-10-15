@@ -1,4 +1,3 @@
-/** Classes dos botões do Figma (laranja sólido e contorno), para `<button>` e `<Link>`. */
 export const buttonStyles = {
   primary:
     "inline-flex items-center justify-center gap-2 rounded-xs bg-brand px-5 font-bold text-ink transition-colors hover:bg-amber focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber disabled:cursor-not-allowed disabled:opacity-50",

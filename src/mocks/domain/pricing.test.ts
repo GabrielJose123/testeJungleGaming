@@ -25,9 +25,7 @@ describe("computeSummary (cotação)", () => {
 
   it("desconto percentual com arredondamento a 6 casas (meio para cima)", () => {
     const summary = computeSummary([{ unitPriceEth: "0.333335", quantity: 1 }], { kind: "percent", value: "10" }, "ethereum")
-    // 10% de 0.333335 = 0.0333335 → exatamente no meio → 0.033334
     expect(summary.discountEth).toBe("0.033334")
-    // 0.333335 − 0.033334 + 0.0021
     expect(summary.totalEth).toBe("0.302101")
     const below = computeSummary([{ unitPriceEth: "0.3333345", quantity: 1 }], { kind: "percent", value: "10" }, "ethereum")
     expect(below.discountEth).toBe("0.033333")

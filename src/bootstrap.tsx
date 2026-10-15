@@ -17,7 +17,6 @@ const router = createRouter({
   routeTree,
   context: { queryClient },
   defaultPreload: "intent",
-  // O TanStack Query já controla frescor; o router não deve cachear loaders por conta própria.
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
   parseSearch,

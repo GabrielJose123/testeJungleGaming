@@ -22,7 +22,6 @@ export function LoadingState({ label = "Carregando…" }: { label?: string }) {
   )
 }
 
-/** Erro de um campo, associado ao input via `aria-describedby`. */
 export function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null
   return (

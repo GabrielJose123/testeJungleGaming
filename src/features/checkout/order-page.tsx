@@ -15,11 +15,6 @@ const route = getRouteApi("/_auth/pedidos/$orderId")
 
 const dateFormat = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" })
 
-/**
- * Figma: Desktop / Confirmação de Pedido (11:4385) — painel "Seus NFTs agora estão na sua carteira",
- * metadados da transação e tabela de itens. A confirmação só aparece para `confirmed` vindo da API
- * (REST ou evento order.updated); o recibo exibe o snapshot do pedido.
- */
 export function OrderPage() {
   const { orderId } = route.useParams()
   const order = useOrder(orderId)

@@ -1,7 +1,3 @@
-/**
- * Dados estáticos TEMPORÁRIOS, copiados do Figma, para montar a camada visual.
- * Serão substituídos por TanStack Query + MSW. Não adicione lógica de negócio aqui.
- */
 import type { BlogPost, FilterOption, NftSummary, PriceRange, PromoCard } from "@/types/catalog"
 
 export const nftImages = {
@@ -26,7 +22,6 @@ export const catalogNfts: NftSummary[] = [
   { id: "violet-nomad-314", name: "Violet Nomad #314", image: nftImages.hoodie, priceEth: "1.39" },
   { id: "ivory-baron-088", name: "Ivory Baron #088", image: nftImages.sage, priceEth: "1.79" },
   { id: "golden-beat-207", name: "Golden Beat #207", image: nftImages.golden, priceEth: "0.99" },
-  // O card equivalente no Figma não tem título nem preço; nome e valor são provisórios.
   { id: "golden-pulse-121", name: "Golden Pulse #121", image: nftImages.golden, priceEth: "0.59" },
   { id: "golden-signal-160", name: "Golden Signal #160", image: nftImages.golden, priceEth: "0.39" },
 ]
@@ -60,7 +55,6 @@ export const networkFilters: FilterOption[] = [
 
 export const priceBounds: PriceRange = { min: 0.02, max: 12.3 }
 
-/** Rótulos das abas e da ordenação; os ids são os valores aceitos pela API (`tab`, `sort`). */
 export const catalogTabs = [
   { id: "all", label: "Todos os NFTs" },
   { id: "new", label: "Novos lançamentos" },

@@ -7,7 +7,6 @@ interface FavoriteButtonProps {
   className?: string
 }
 
-/** Figma: botão circular de 28 px com coração (Frame 410). */
 export function FavoriteButton({ nftName, pressed = false, onPressedChange, className }: FavoriteButtonProps) {
   return (
     <button

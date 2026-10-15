@@ -2,7 +2,6 @@ import type { ApiErrorCode, ApiErrorPayload, FieldErrors } from "@/api/types"
 
 const RETRYABLE_STATUSES = new Set([500, 502, 503, 504])
 
-/** Erro de domínio do servidor simulado; os handlers o convertem no envelope `{ error }`. */
 export class MockApiError extends Error {
   readonly status: number
   readonly code: ApiErrorCode
@@ -37,7 +36,6 @@ export function notFound(code: ApiErrorCode = "NOT_FOUND", message = "Recurso n�
   return new MockApiError(404, code, message)
 }
 
-/** Lança VALIDATION_ERROR se houver algum erro de campo. */
 export function assertValid(fieldErrors: FieldErrors) {
   if (Object.keys(fieldErrors).length > 0) throw validationError(fieldErrors)
 }

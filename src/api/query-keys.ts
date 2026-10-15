@@ -1,9 +1,5 @@
 import type { NftListParams } from "./types"
 
-/**
- * Fábrica de query keys (docs/design.md §4). Dados privados ficam sob ["private", scope, ...]:
- * o escopo isola usuários e permite limpar tudo de uma vez no logout ou na troca de usuário.
- */
 export const queryKeys = {
   session: () => ["session"] as const,
 
@@ -26,7 +22,6 @@ export const queryKeys = {
   },
 }
 
-/** Escopo dos dados privados: o usuário logado ou o carrinho do visitante. */
 export function privateScope(userId: string | null | undefined, guestCartId: string) {
   return userId ?? `guest:${guestCartId}`
 }

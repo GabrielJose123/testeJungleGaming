@@ -9,7 +9,6 @@ import { queryKeys } from "../query-keys"
 import type { LoginRequest, RegisterRequest, SessionResponse } from "../types"
 
 function startSession(session: SessionResponse) {
-  // O carrinho do visitante foi mesclado pelo servidor; o próximo visitante começa outro.
   resetGuestCartId()
   setSession(session)
 }
@@ -28,24 +27,18 @@ export function useRegister() {
   })
 }
 
-/** Logout: avisa o servidor (melhor esforço) e limpa a sessão local mesmo se a chamada falhar. */
 export function useLogout() {
   return useMutation({
     mutationFn: async () => {
       try {
         await authApi.logout()
       } catch {
-        // Sessão já inválida ou sem rede: o logout local continua.
       }
     },
     onSettled: () => clearSession("logout"),
   })
 }
 
-/**
- * Revalida a sessão persistida em segundo plano (boot e a cada 5 min).
- * Um 401 é tratado pelo interceptor do Axios, que encerra a sessão local.
- */
 export function useSessionValidation() {
   const session = useSession()
   const query = useQuery({

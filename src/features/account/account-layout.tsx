@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 
 const disabledItems = ["Atividade", "Lista de interesse", "Ofertas", "Arquivos baixados", "Suporte"]
 
-/** Figma: Desktop / Perfil (9:1238) e Carteiras (9:1670) — menu lateral 310 px + conteúdo. */
 export function AccountLayout({ active, title, children }: { active: "profile" | "wallets"; title: string; children: React.ReactNode }) {
   const logout = useLogout()
   const item = (selected: boolean) =>

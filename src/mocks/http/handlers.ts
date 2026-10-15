@@ -46,10 +46,6 @@ function cartOwner(request: Request, auth: { user: { id: string } } | null): Car
   return { guestCartId }
 }
 
-// ---------------------------------------------------------------------------
-// Sessão e conta
-// ---------------------------------------------------------------------------
-
 const authHandlers = [
   http.post(
     api("/auth/register"),
@@ -96,7 +92,6 @@ const authHandlers = [
       assertValid(errors)
 
       const user = db().users.find((entry) => entry.email === normalizeEmail(body.email!))
-      // Mesmo custo de verificação para e-mail inexistente (evita enumeração por tempo).
       const valid = await verifyPassword(body.password!, user?.passwordHash ?? "pbkdf2$100000$00$00")
       if (!user || !valid) throw new MockApiError(401, "INVALID_CREDENTIALS", "E-mail ou senha incorretos.")
       mergeGuestCart(body.guestCartId, user.id)
@@ -117,10 +112,6 @@ const authHandlers = [
     }),
   ),
 ]
-
-// ---------------------------------------------------------------------------
-// NFTs e favoritos
-// ---------------------------------------------------------------------------
 
 const catalogHandlers = [
   http.get(
@@ -166,10 +157,6 @@ const catalogHandlers = [
   ),
 ]
 
-// ---------------------------------------------------------------------------
-// Carrinho, cotação e pedidos
-// ---------------------------------------------------------------------------
-
 const cartHandlers = [
   http.get(api("/cart"), route("read", "optional", ({ request, auth }) => json(getCart(cartOwner(request, auth))))),
 
@@ -207,7 +194,6 @@ const cartHandlers = [
     route("write", "required", async ({ request, auth }) => {
       const key = request.headers.get("Idempotency-Key")
       const { order, replayed } = createOrder(auth.user.id, key, await readJson<CreateOrderRequest>(request))
-      // Cenário order-timeout: o pedido foi criado, mas a primeira resposta não chega a tempo.
       if (!replayed && getScenario() === "order-timeout" && consumeOnce(`order-timeout:${key}`)) {
         await delay(CLIENT_TIMEOUT_MS + 5_000)
       }
@@ -225,10 +211,6 @@ const cartHandlers = [
 
   http.get<{ id: string }>(api("/orders/:id"), route("read", "required", ({ auth, params }) => json(getOrder(auth.user.id, params.id)))),
 ]
-
-// ---------------------------------------------------------------------------
-// Perfil
-// ---------------------------------------------------------------------------
 
 const AVATAR_PATTERN = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/
 const AVATAR_MAX_BYTES = 1024 * 1024
@@ -305,10 +287,6 @@ const profileHandlers = [
     }),
   ),
 ]
-
-// ---------------------------------------------------------------------------
-// Carteiras
-// ---------------------------------------------------------------------------
 
 const ROLES: readonly WalletRole[] = ["primary", "secondary"]
 const EVM_ADDRESS = /^0x[0-9a-fA-F]{40}$/
@@ -392,7 +370,6 @@ const walletHandlers = [
       const current = requireWallet(auth.user.id, params.id)
       const body = await readJson<CreateWalletRequest>(request)
       const merged = { ...current, ...body }
-      // Endereço é revalidado quando ele ou a rede mudam.
       const errors = validateWallet(
         { ...body, network: merged.network, address: body.address ?? (body.network ? current.address : undefined) },
         true,

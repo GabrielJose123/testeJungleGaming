@@ -3,12 +3,6 @@ import { Link } from "@tanstack/react-router"
 import { PageShell } from "@/components/layout/page-shell"
 import { cn } from "@/lib/utils"
 
-/**
- * Figma: Desktop / Login (9:115) mostra o formulário num painel 500 px com abas
- * "Entrar | Criar conta" e borda inferior laranja; Mobile / Login (16:1022) e Cadastro (16:1228)
- * mostram a marca KURIO centralizada. Aqui o painel é a própria página (rota com URL própria)
- * em vez de um modal sobre a Início.
- */
 export function AuthCard({ mode, redirect, intro, children }: { mode: "login" | "register"; redirect?: string; intro: string; children: React.ReactNode }) {
   return (
     <PageShell nav="home" headerDivider mobileTab="profile">

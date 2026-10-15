@@ -1,4 +1,3 @@
-/** Valores em ETH trafegam como strings decimais (ver docs/spec.md §3). */
 export type EthAmount = string
 
 export interface NftSummary {
@@ -6,9 +5,7 @@ export interface NftSummary {
   name: string
   image: string
   priceEth: EthAmount
-  /** Preço anterior, exibido ao lado do atual quando há redução. */
   previousPriceEth?: EthAmount | null
-  /** Selo curto sobre a arte (ex.: "RARO"). */
   badge?: string | null
 }
 

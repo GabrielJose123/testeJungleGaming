@@ -2,11 +2,6 @@ import { useSyncExternalStore } from "react"
 
 import type { EthAmount, OrderStatus } from "@/api/types"
 
-/**
- * Estado observável do tempo real para a interface: situação da conexão, avisos acessíveis
- * (aria-live) e as últimas mudanças por NFT (para detectar cotação desatualizada no checkout).
- */
-
 export type ConnectionState = "idle" | "connecting" | "connected" | "reconnecting" | "disconnected"
 
 export type RealtimeNotice =
@@ -18,7 +13,6 @@ export type RealtimeNotice =
       priceEth: EthAmount
       previousPriceEth: EthAmount | null
       available: number
-      /** O NFT está no carrinho atual. */
       inCart: boolean
       at: number
     }
@@ -74,10 +68,6 @@ export function useRealtimeState() {
   return useSyncExternalStore(realtimeStore.subscribe, realtimeStore.get, realtimeStore.get)
 }
 
-/**
- * A cotação ficou desatualizada se algum NFT dela mudou depois que ela foi criada.
- * O checkout usa isso para exigir uma nova revisão antes de confirmar.
- */
 export function changedSince(nftIds: string[], since: string | number, changes = state.nftChanges) {
   const threshold = typeof since === "number" ? since : new Date(since).getTime()
   return nftIds.filter((id) => (changes[id]?.at ?? 0) > threshold)

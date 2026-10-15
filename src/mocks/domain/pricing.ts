@@ -5,7 +5,6 @@ import { eth, multiplyEth, toEthAmount, type EthDecimal } from "@/lib/money"
 
 import type { CouponRecord } from "../db/schema"
 
-/** Taxa de rede por rede de pagamento (simulada, em ETH). */
 export const NETWORK_FEES: Record<Network, EthAmount> = {
   ethereum: "0.0021",
   polygon: "0.0004",
@@ -14,7 +13,6 @@ export const NETWORK_FEES: Record<Network, EthAmount> = {
 
 export const DEFAULT_NETWORK: Network = "ethereum"
 
-/** Casas decimais do desconto percentual. */
 const DISCOUNT_DECIMALS = 6
 
 export interface PricedLine {
@@ -26,12 +24,6 @@ export function lineTotal(line: PricedLine): EthAmount {
   return multiplyEth(line.unitPriceEth, line.quantity)
 }
 
-/**
- * Regra de cotação (docs/design.md §2):
- * subtotal = Σ preço × quantidade; desconto percentual arredondado a 6 casas (meio para cima)
- * ou fixo limitado ao subtotal; taxa por rede; total = subtotal − desconto + taxa.
- * Carrinho vazio não paga taxa.
- */
 export function computeSummary(lines: PricedLine[], coupon: Pick<AppliedCoupon, "kind" | "value"> | null, network: Network): PriceSummary {
   const subtotal = lines.reduce<EthDecimal>((sum, line) => sum.plus(lineTotal(line)), eth(0))
 

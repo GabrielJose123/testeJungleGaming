@@ -2,10 +2,8 @@ import { AxiosError, isAxiosError, isCancel } from "axios"
 
 import type { ApiErrorBody, ApiErrorCode, ClientErrorCode, FieldErrors } from "./types"
 
-/** Erro normalizado que chega aos hooks e à interface — vindo da API ou do próprio cliente. */
 export class ApiError extends Error {
   readonly code: ApiErrorCode | ClientErrorCode
-  /** 0 quando não houve resposta HTTP. */
   readonly status: number
   readonly retryable: boolean
   readonly fieldErrors: FieldErrors
@@ -77,7 +75,6 @@ export function isRetryable(error: unknown) {
   return error instanceof ApiError && error.retryable
 }
 
-/** Falha sem resposta: o servidor pode ter processado a requisição. */
 export function isTransportFailure(error: unknown) {
   return isApiError(error, "NETWORK_ERROR") || isApiError(error, "TIMEOUT")
 }

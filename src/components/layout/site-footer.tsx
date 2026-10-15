@@ -41,7 +41,6 @@ const socials = [
   { icon: "social-5", label: "YouTube" },
 ]
 
-/** Figma: "Footer" (desktop, 1200 px). Abaixo de `lg` as colunas empilham. */
 export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer className={cn("flex w-full flex-col", className)}>

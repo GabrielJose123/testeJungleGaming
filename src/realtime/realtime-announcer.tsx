@@ -16,10 +16,6 @@ function describe(notice: RealtimeNotice) {
   return `${name} agora custa ${formatEth(notice.priceEth)}. O resumo do carrinho foi atualizado.`
 }
 
-/**
- * Região aria-live: anuncia para leitores de tela as mudanças recebidas em tempo real
- * que afetam o usuário (itens do carrinho e pedidos).
- */
 export function RealtimeAnnouncer() {
   const { notices } = useRealtimeState()
   const last = [...notices].reverse().find((notice) => describe(notice))

@@ -11,8 +11,6 @@ import type {
   Wallet,
 } from "@/api/types"
 
-/** Registros internos do servidor simulado (não são expostos diretamente). */
-
 export interface NftRecord {
   id: string
   name: string
@@ -45,7 +43,6 @@ export interface UserRecord {
   id: string
   name: string
   email: string
-  /** `pbkdf2$<iterações>$<saltHex>$<hashHex>` — nunca a senha em claro. */
   passwordHash: string
   avatarUrl: string | null
   bio: string
@@ -68,7 +65,6 @@ export interface CartLineRecord {
 
 export interface CartRecord {
   id: string
-  /** `null` = carrinho de visitante (identificado por `X-Cart-Id`). */
   userId: string | null
   lines: CartLineRecord[]
   couponCode: string | null
@@ -93,11 +89,8 @@ export type OrderOutcome = "confirm" | "reject"
 
 export interface OrderRecord extends Order {
   userId: string
-  /** Resultado decidido na criação (cenário ativo naquele momento). */
   outcome: OrderOutcome
-  /** Momento em que o pedido sai de `pending`. */
   settleAt: IsoDateTime
-  /** Quantidades compradas por linha de carrinho, para removê-las na confirmação. */
   purchasedLines: Array<{ nftId: string; editionId: string; quantity: number }>
 }
 
@@ -125,7 +118,6 @@ export interface MockDatabase {
   orders: OrderRecord[]
   idempotency: IdempotencyRecord[]
   wallets: WalletRecord[]
-  /** Sequência para numerar pedidos (KR-000123). */
   orderSequence: number
 }
 

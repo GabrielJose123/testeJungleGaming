@@ -8,7 +8,6 @@ import { getSession } from "@/session/session-store"
 import type { EventGate } from "./event-gate"
 import { realtimeStore } from "./realtime-store"
 
-/** Maior versão do NFT já presente no cache (detalhe ou qualquer listagem). */
 function cachedNftVersion(queryClient: QueryClient, nftId: string) {
   let version = queryClient.getQueryData<NftDetail>(queryKeys.nfts.detail(nftId))?.version ?? 0
   for (const [, page] of queryClient.getQueriesData<NftPage>({ queryKey: queryKeys.nfts.lists() })) {
@@ -18,11 +17,6 @@ function cachedNftVersion(queryClient: QueryClient, nftId: string) {
   return version
 }
 
-/**
- * `nft.updated`: atualiza preço/estoque no detalhe e nas listas (só se a versão for maior),
- * revalida o carrinho que contém o NFT (o servidor recalcula o resumo) e registra a mudança
- * para o checkout e para os avisos acessíveis.
- */
 export function applyNftUpdated(queryClient: QueryClient, gate: EventGate, event: NftUpdatedEvent) {
   const nftId = event.resource.id
   if (gate.accept(event, cachedNftVersion(queryClient, nftId)) !== "accepted") return false
@@ -49,7 +43,6 @@ export function applyNftUpdated(queryClient: QueryClient, gate: EventGate, event
     }
   })
 
-  // Carrinhos em cache que contêm o NFT: o REST é a fonte do resumo e das `issues`.
   let inCart = false
   let name: string | null = null
   for (const [key, cart] of queryClient.getQueriesData<Cart>({ queryKey: queryKeys.private.all() })) {
@@ -79,10 +72,6 @@ export function applyNftUpdated(queryClient: QueryClient, gate: EventGate, event
   return true
 }
 
-/**
- * `order.updated`: só para o usuário atual; atualiza o pedido em cache sem regredir versão
- * e dispara os efeitos de estado final (uma única vez).
- */
 export function applyOrderUpdated(queryClient: QueryClient, gate: EventGate, event: OrderUpdatedEvent) {
   const userId = getSession()?.user.id
   if (!userId || event.data.userId !== userId) return false

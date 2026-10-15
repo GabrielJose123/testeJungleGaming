@@ -4,11 +4,6 @@ import { eth, toEthAmount } from "@/lib/money"
 import type { CollectionRecord, NftRecord } from "../db/schema"
 import { createRandom } from "../random"
 
-/**
- * 48 NFTs determinísticos. Os 9 primeiros reproduzem o catálogo do Figma (nomes e preços);
- * os demais variam coleção, rede, preço, tiragem e estoque para exercitar filtros e paginação.
- */
-
 export const collections: CollectionRecord[] = [
   { id: "arte-digital", name: "Arte digital" },
   { id: "fotografia", name: "Fotografia" },
@@ -39,7 +34,6 @@ interface Seed {
   network?: Network
 }
 
-/** Catálogo do Figma (Desktop / Início). */
 const figmaSeeds: Seed[] = [
   { name: "Emerald Ape #042", image: "varsity", priceEth: "1.19", collectionId: "arte-digital", network: "ethereum" },
   { name: "Sage Nomad #009", image: "hoodie", priceEth: "1.69", collectionId: "arte-digital", network: "ethereum" },
@@ -67,7 +61,6 @@ const traitPool = ["Óculos", "Esmeralda", "Raro", "Capuz", "Fones", "Chapéu", 
 const networks: Network[] = ["ethereum", "polygon", "solana"]
 const imageKeys: ImageKey[] = ["varsity", "hoodie", "sage", "golden"]
 
-/** Momento de referência do catálogo: os mais recentes são "Novos lançamentos". */
 export const CATALOG_REFERENCE_DATE = Date.UTC(2026, 9, 1)
 const DAY = 86_400_000
 

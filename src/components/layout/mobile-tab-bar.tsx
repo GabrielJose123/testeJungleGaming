@@ -9,10 +9,6 @@ interface MobileTabBarProps {
   className?: string
 }
 
-/**
- * Figma: "Tab Bar" do frame Mobile / Início. As posições em % reproduzem o frame de 414 px;
- * o fundo (SVG com recorte para o botão central) estica na horizontal em telas mais largas.
- */
 export function MobileTabBar({ active = "home", className }: MobileTabBarProps) {
   return (
     <nav
@@ -94,7 +90,6 @@ function TabLink({
   )
 }
 
-/** Ícone de leitura: os 5 vetores do Figma, com posições relativas ao grupo original (26.8 × 24). */
 const scanParts = [
   { src: "scan-1", inset: "46.3% 0 46.3% 0" },
   { src: "scan-2", inset: "57% 56.5% 0 5%" },

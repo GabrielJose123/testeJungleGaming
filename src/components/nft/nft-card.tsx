@@ -5,22 +5,16 @@ import type { NftSummary } from "@/types/catalog"
 
 import { FavoriteButton } from "./favorite-button"
 
-/** As artes locais têm uma variante de 400 px (`-400.webp`) para os cards. */
 function artSrcSet(image: string) {
   return image.endsWith(".webp") ? `${image.replace(/\.webp$/, "-400.webp")} 400w, ${image} 800w` : undefined
 }
 
 interface NftCardProps {
   nft: NftSummary
-  /** Imagens acima da dobra carregam com prioridade. */
   priority?: boolean
   className?: string
 }
 
-/**
- * Figma: card de produto. Desktop (lg+): moldura plana 258 × 300 com arte 250 px.
- * Mobile: moldura com gradiente, raio 20 e arte 168 px, com favorito e selo.
- */
 export function NftCard({ nft, priority = false, className }: NftCardProps) {
   return (
     <article className={cn("group relative flex flex-col gap-2 lg:gap-3", className)}>

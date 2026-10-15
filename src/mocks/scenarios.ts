@@ -4,10 +4,6 @@ import type { ApiErrorBody } from "@/api/types"
 
 import { createRandom } from "./random"
 
-/**
- * Cenários de rede e de negócio do servidor simulado (docs/design.md §8).
- * Seleção: `?scenario=<nome>` na URL (persistido em localStorage) ou `PUT /api/__mock/scenario`.
- */
 export const SCENARIOS = {
   default: "Latência determinística de 150–400 ms",
   slow: "2,5 s em toda requisição",
@@ -40,7 +36,6 @@ export function getScenario(): ScenarioName {
     const stored = typeof localStorage === "undefined" ? null : localStorage.getItem(STORAGE_KEY)
     if (isScenario(stored)) return stored
   } catch {
-    // storage indisponível
   }
   return memoryScenario
 }
@@ -52,17 +47,11 @@ export function setScenario(name: ScenarioName) {
     if (name === "default") localStorage.removeItem(STORAGE_KEY)
     else localStorage.setItem(STORAGE_KEY, name)
   } catch {
-    // storage indisponível: fica só em memória
   }
 }
 
-// ---------------------------------------------------------------------------
-// Estado efêmero dos cenários (por carregamento de página)
-// ---------------------------------------------------------------------------
-
 let random = createRandom(7)
 const flakySeen = new Set<string>()
-/** Efeitos "uma vez por cenário" (preço alterado, esgotado, timeout do pedido). */
 const consumed = new Set<string>()
 
 export function resetScenarioState() {
@@ -71,7 +60,6 @@ export function resetScenarioState() {
   consumed.clear()
 }
 
-/** Retorna `true` apenas na primeira chamada para a chave enquanto o cenário estiver ativo. */
 export function consumeOnce(key: string) {
   const scoped = `${getScenario()}:${key}`
   if (consumed.has(scoped)) return false
@@ -97,10 +85,6 @@ function errorResponse(status: number, code: ApiErrorBody["error"]["code"], mess
 
 export type RouteKind = "catalog" | "read" | "write"
 
-/**
- * Aplica latência e falhas de rede antes do handler. Retorna uma resposta para
- * interromper o fluxo, ou `undefined` para seguir.
- */
 export async function applyNetworkConditions(request: Request, kind: RouteKind): Promise<Response | undefined> {
   const scenario = getScenario()
   const isRead = kind !== "write"

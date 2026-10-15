@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
 import type { NftSummary } from "@/types/catalog"
 
-/** Figma: "Featured NFT Banner" — 310 × 470 na coluna lateral do desktop. */
 export function FeaturedBanner({ nft, className }: { nft: NftSummary; className?: string }) {
   return (
     <section

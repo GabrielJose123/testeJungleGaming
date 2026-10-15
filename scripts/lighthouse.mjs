@@ -1,15 +1,4 @@
 #!/usr/bin/env node
-/**
- * Auditoria Lighthouse do build de demonstração (mocks ativos, cenário padrão).
- *
- * 1. Gera o build (`npm run build:demo`), salvo com `--skip-build`.
- * 2. Sobe `vite preview` numa porta livre.
- * 3. Para cada página × perfil (mobile/desktop), roda N medições (padrão 3; `--runs=N`).
- * 4. Salva HTML/JSON de cada medição e um resumo com a mediana por categoria,
- *    LCP, CLS e TBT, versões das ferramentas e ambiente em lighthouse/reports/.
- *
- * Uso: npm run lighthouse [-- --skip-build] [-- --runs=1]
- */
 import { execSync, spawn } from "node:child_process"
 import { mkdirSync, writeFileSync } from "node:fs"
 import { createRequire } from "node:module"
@@ -43,7 +32,6 @@ async function waitForServer(url, timeoutMs = 30_000) {
     try {
       if ((await fetch(url)).ok) return
     } catch {
-      // ainda subindo
     }
     await sleep(300)
   }
@@ -94,7 +82,6 @@ try {
     }
   }
 
-  // Medianas por página e perfil.
   const groups = {}
   for (const result of results) (groups[`${result.page}|${result.profile}`] ??= []).push(result)
   const summary = Object.entries(groups).map(([key, runs]) => {

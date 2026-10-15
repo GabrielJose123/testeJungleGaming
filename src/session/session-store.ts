@@ -1,11 +1,5 @@
 import type { SessionResponse, User } from "@/api/types"
 
-/**
- * Estado da sessão fora do React: lido pelo interceptor do Axios, pelas guardas do
- * TanStack Router, pelo socket e pelos hooks (via useSyncExternalStore).
- * Persistido em localStorage para sobreviver a refresh; sincronizado entre abas.
- */
-
 const SESSION_KEY = "kurio:session"
 const GUEST_CART_KEY = "kurio:guest-cart-id"
 
@@ -57,7 +51,6 @@ function write(session: Session | null) {
     if (session) storage()?.setItem(SESSION_KEY, JSON.stringify(session))
     else storage()?.removeItem(SESSION_KEY)
   } catch {
-    // storage indisponível: a sessão fica só em memória
   }
 }
 
@@ -69,7 +62,6 @@ function scheduleExpiry(session: Session | null) {
   clearTimeout(expiryTimer)
   if (!session) return
   const wait = new Date(session.expiresAt).getTime() - Date.now()
-  // setTimeout aceita até ~24,8 dias; sessões são de 30 min.
   if (wait > 0 && wait < 2 ** 31 - 1) expiryTimer = setTimeout(() => expireSession(), wait)
 }
 
@@ -105,7 +97,6 @@ export function setSession(response: SessionResponse) {
   replace({ token: response.token, expiresAt: response.expiresAt, user: response.user }, "login")
 }
 
-/** Atualiza dados da sessão atual (ex.: perfil editado, sessão revalidada) sem trocar de usuário. */
 export function refreshSession(response: Partial<SessionResponse> & { user: User }) {
   if (!current) return
   replace({ ...current, ...response }, "refresh")
@@ -120,10 +111,6 @@ export function expireSession() {
   clearSession("expired")
 }
 
-// ---------------------------------------------------------------------------
-// Carrinho de visitante
-// ---------------------------------------------------------------------------
-
 let memoryGuestCartId: string | null = null
 
 export function getGuestCartId(): string {
@@ -133,24 +120,17 @@ export function getGuestCartId(): string {
   try {
     storage()?.setItem(GUEST_CART_KEY, memoryGuestCartId)
   } catch {
-    // segue em memória
   }
   return memoryGuestCartId
 }
 
-/** Após o login o carrinho do visitante foi mesclado no do usuário: começa um novo. */
 export function resetGuestCartId() {
   memoryGuestCartId = null
   try {
     storage()?.removeItem(GUEST_CART_KEY)
   } catch {
-    // ignore
   }
 }
-
-// ---------------------------------------------------------------------------
-// Sincronização entre abas
-// ---------------------------------------------------------------------------
 
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (event) => {

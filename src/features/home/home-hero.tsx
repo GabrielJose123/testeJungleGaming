@@ -5,12 +5,10 @@ import type { NftSummary } from "@/types/catalog"
 
 interface HomeHeroProps {
   nft: NftSummary
-  /** NFT secundário sobreposto à arte no banner mobile. */
   secondaryNft: NftSummary
   className?: string
 }
 
-/** Figma: "Hero" (desktop, 1200 × 450) e "Hero Banner" (mobile, 366 × 190). */
 export function HomeHero({ nft, secondaryNft, className }: HomeHeroProps) {
   return (
     <section aria-label="Destaque" className={className}>
@@ -125,7 +123,6 @@ function MobileHero({ nft, secondaryNft }: { nft: NftSummary; secondaryNft: NftS
   )
 }
 
-/** Indicador de slides: o Figma desenha 3 pontos iguais, sem estado ativo. */
 function CarouselDots({ src, width, height, className }: { src: string; width: number; height: number; className?: string }) {
   return <img src={src} alt="" aria-hidden width={width} height={height} className={cn("block", className)} />
 }

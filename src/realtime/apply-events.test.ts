@@ -37,9 +37,7 @@ describe("aplicação de eventos no cache", () => {
     expect(applyNftUpdated(queryClient, gate, nftEvent("e1", 3, "1.6"))).toBe(true)
     expect(queryClient.getQueryData<NftDetail>(key)).toMatchObject({ version: 3, priceEth: "1.6" })
 
-    // Antigo (v2) chegando depois: não regride.
     expect(applyNftUpdated(queryClient, gate, nftEvent("e2", 2, "1.5"))).toBe(false)
-    // Duplicata: não reaplica.
     expect(applyNftUpdated(queryClient, gate, nftEvent("e1", 3, "1.6"))).toBe(false)
     expect(queryClient.getQueryData<NftDetail>(key)).toMatchObject({ version: 3, priceEth: "1.6" })
   })

@@ -4,7 +4,6 @@ import { nftsApi } from "../endpoints"
 import { queryKeys } from "../query-keys"
 import type { NftListParams } from "../types"
 
-/** Remove parâmetros vazios para que combinações equivalentes compartilhem a mesma chave. */
 export function normalizeListParams(params: NftListParams): NftListParams {
   const normalized: NftListParams = {}
   if (params.q?.trim()) normalized.q = params.q.trim()
@@ -19,11 +18,6 @@ export function normalizeListParams(params: NftListParams): NftListParams {
   return normalized
 }
 
-/**
- * Catálogo paginado. Cada combinação de parâmetros tem sua chave; ao mudar de chave a
- * requisição anterior é abortada (signal), então respostas fora de ordem não sobrescrevem
- * o resultado atual. Os dados anteriores ficam visíveis durante a troca de página.
- */
 export function useNfts(params: NftListParams) {
   const normalized = normalizeListParams(params)
   return useQuery({

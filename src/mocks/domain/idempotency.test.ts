@@ -112,7 +112,6 @@ describe("POST /orders (domínio)", () => {
   it("confirmação baixa o estoque, remove só os itens comprados e publica eventos", () => {
     const request = prepareCheckout()
     const { order } = createOrder(userId, "key-1", request)
-    // Item adicionado depois da cotação permanece no carrinho.
     addItem({ userId }, { nftId: "emerald-ape-042", editionId: "1-50", quantity: 1 })
     const stockBefore = db().nfts.find((nft) => nft.id === "golden-beat-207")!.editions.find((edition) => edition.id === "1-50")!.available
 
@@ -127,7 +126,6 @@ describe("POST /orders (domínio)", () => {
     expect(stockAfter).toBe(stockBefore - 2)
 
     expect(events.map((event) => event.type)).toEqual(["order.updated", "nft.updated"])
-    // Repetição depois de confirmado devolve o pedido final, sem novos efeitos.
     expect(createOrder(userId, "key-1", request).order.status).toBe("confirmed")
     expect(events).toHaveLength(2)
   })

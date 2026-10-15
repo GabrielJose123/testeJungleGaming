@@ -5,17 +5,13 @@ import { cn } from "@/lib/utils"
 export type NavSection = "home" | "market"
 
 interface SiteHeaderProps {
-  /** Item ativo da navegação: "home" (Início) ou "market" (Mercado). */
   active: NavSection
   cartCount: number
-  /** Nome do usuário logado: o botão "Entrar" vira um atalho para o perfil. */
   userName?: string
-  /** Linha fina sob o cabeçalho; as telas do fluxo de mercado usam o cabeçalho sem ela. */
   withDivider?: boolean
   className?: string
 }
 
-/** Figma: "Header With Divider" / "Header Row" (desktop, 1200 px). */
 export function SiteHeader({ active, cartCount, userName, withDivider = false, className }: SiteHeaderProps) {
   return (
     <header className={cn("hidden w-full lg:block", className)}>
@@ -80,7 +76,6 @@ function NavItem({ to, hash, label, active }: { to: "/"; hash?: string; label: s
   )
 }
 
-/** Seções editoriais estão fora do escopo: o item aparece, mas não navega. */
 function UnavailableNavItem({ label }: { label: string }) {
   return (
     <span aria-disabled="true" title="Em breve" className="cursor-not-allowed text-body-lg leading-none text-cream">

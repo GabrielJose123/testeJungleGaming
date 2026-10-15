@@ -3,12 +3,10 @@ import { cn } from "@/lib/utils"
 interface MobileSearchBarProps {
   value?: string
   onValueChange?: (value: string) => void
-  /** Botão de filtros ao lado da busca (abre o painel). */
   filterTrigger: React.ReactNode
   className?: string
 }
 
-/** Figma: "Search Bar" do frame Mobile / Início — campo de 45 px + botão de filtros. */
 export function MobileSearchBar({ value, onValueChange, filterTrigger, className }: MobileSearchBarProps) {
   return (
     <div role="search" className={cn("flex h-[45px] gap-2", className)}>

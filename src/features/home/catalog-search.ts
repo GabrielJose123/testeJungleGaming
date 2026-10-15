@@ -3,12 +3,6 @@ import { z } from "zod"
 import { CATALOG_TABS, NETWORKS, NFT_SORTS, type NftListParams } from "@/api/types"
 import { isEthAmount } from "@/lib/money"
 
-/**
- * Estado do catálogo na URL (busca, filtros, ordenação e página): sobrevive a refresh e
- * navegação pelo histórico. Valores inválidos caem no padrão em vez de quebrar a página.
- */
-
-/** Aceita `a,b` (CSV) ou `["a","b"]` (formato JSON do TanStack Router). */
 const list = <T extends z.ZodType<string>>(item: T) =>
   z
     .preprocess((value) => (typeof value === "string" ? value.split(",").filter(Boolean) : value), z.array(item))
@@ -51,7 +45,6 @@ export function toListParams(search: CatalogSearch): NftListParams {
   }
 }
 
-/** Qualquer mudança de filtro/busca/ordenação volta para a página 1. */
 export function withFilters(search: CatalogSearch, patch: Partial<Omit<CatalogSearch, "page">>): CatalogSearch {
   const next: CatalogSearch = { ...search, ...patch, page: undefined }
   for (const key of Object.keys(next) as Array<keyof CatalogSearch>) {

@@ -1,9 +1,5 @@
 import { test as base, expect, type Page } from "@playwright/test"
 
-/**
- * Controle do servidor simulado a partir dos testes. As chamadas saem de DENTRO da página
- * (`page.evaluate(fetch)`) para passar pelo MSW — `page.request` iria direto à rede.
- */
 export class MockServer {
   private readonly page: Page
 
@@ -34,7 +30,6 @@ export class MockServer {
     return this.call("POST", "/reset")
   }
 
-  /** Muda preço/estoque no servidor → resposta REST e evento `nft.updated` via Socket.IO. */
   updateNft(nftId: string, change: { editionId?: string; priceEth?: string; available?: number }) {
     return this.call("PATCH", `/nfts/${nftId}`, change)
   }

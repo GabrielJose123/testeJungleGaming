@@ -7,7 +7,6 @@ import { isApiError } from "../errors"
 import { queryKeys } from "../query-keys"
 import type { AddCartItemRequest, Cart } from "../types"
 
-/** Carrinho do usuário ou do visitante. Sempre revalida ao montar (staleTime 0). */
 export function useCart() {
   const scope = usePrivateScope()
   return useQuery({
@@ -17,10 +16,6 @@ export function useCart() {
   })
 }
 
-/**
- * Mutations do carrinho: a resposta é o carrinho atualizado, gravado direto no cache.
- * Conflitos (409: estoque/limite) revalidam o carrinho para refletir o estado do servidor.
- */
 function useCartMutation<TVariables>(mutationFn: (variables: TVariables) => Promise<Cart>) {
   const queryClient = useQueryClient()
   const key = queryKeys.private.cart(usePrivateScope())
@@ -53,7 +48,6 @@ export function useRemoveCoupon() {
   return useCartMutation(() => cartApi.removeCoupon())
 }
 
-/** Quantidade total de itens (badge do cabeçalho). */
 export function useCartCount() {
   const { data } = useCart()
   return data?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0

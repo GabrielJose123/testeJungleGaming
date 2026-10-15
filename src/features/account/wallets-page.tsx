@@ -13,7 +13,6 @@ import { AccountLayout } from "./account-layout"
 
 const emptyWallet: CreateWalletRequest = { label: "", address: "", network: "ethereum", role: "secondary" }
 
-/** Figma: Desktop / Carteiras (9:1670) — lista, cadastro/edição, principal e conexão simulada. */
 export function WalletsPage() {
   const wallets = useWallets()
   const connect = useConnectWallet()

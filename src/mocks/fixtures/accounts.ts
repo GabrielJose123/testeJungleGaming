@@ -1,9 +1,5 @@
 import type { CouponRecord, UserRecord, WalletRecord } from "../db/schema"
 
-/**
- * Usuários fictícios. Senha de ambos: `Kurio@123` — guardada apenas como hash PBKDF2-SHA256
- * (100 000 iterações, salt por usuário), gerado fora do código.
- */
 export const userFixtures: UserRecord[] = [
   {
     id: "user-ana",

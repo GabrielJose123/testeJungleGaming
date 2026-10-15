@@ -1,6 +1,5 @@
 import type { IdempotencyRecord } from "../db/schema"
 
-/** JSON com chaves ordenadas: o mesmo conteúdo sempre gera o mesmo texto. */
 export function stableStringify(value: unknown): string {
   if (value === null || typeof value !== "object") return JSON.stringify(value)
   if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`
@@ -10,7 +9,6 @@ export function stableStringify(value: unknown): string {
   return `{${entries.map(([key, entry]) => `${JSON.stringify(key)}:${stableStringify(entry)}`).join(",")}}`
 }
 
-/** Hash não criptográfico (cyrb53) — suficiente para comparar payloads. */
 export function hashPayload(payload: unknown): string {
   const text = stableStringify(payload)
   let h1 = 0xdeadbeef
@@ -30,10 +28,6 @@ export type IdempotencyDecision =
   | { kind: "replay"; orderId: string }
   | { kind: "conflict"; orderId: string }
 
-/**
- * Mesma chave + mesmo payload → repete o pedido existente.
- * Mesma chave + payload diferente → conflito. Chaves são isoladas por usuário.
- */
 export function resolveIdempotency(
   records: readonly IdempotencyRecord[],
   userId: string,

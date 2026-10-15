@@ -26,10 +26,6 @@ interface ToggleVariables {
   favorite: boolean
 }
 
-/**
- * Favoritar com atualização otimista: aplica no cache na hora, desfaz (rollback) se a
- * mutation falhar e revalida com o servidor ao final.
- */
 export function useToggleFavorite() {
   const queryClient = useQueryClient()
   const userId = useCurrentUserId()

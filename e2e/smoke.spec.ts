@@ -1,9 +1,5 @@
 import { expect, test } from "./fixtures"
 
-/**
- * Fumaça: o app sobe com os mocks, o catálogo vem do MSW e a navegação até o detalhe funciona,
- * nos viewports desktop e mobile.
- */
 test("catálogo carrega da API simulada e leva ao detalhe do NFT", async ({ page }) => {
   await page.goto("/")
 
@@ -21,7 +17,6 @@ test("catálogo carrega da API simulada e leva ao detalhe do NFT", async ({ page
 test("socket conecta e reflete mudança de preço no detalhe", async ({ page, mock }) => {
   await page.goto("/nft/emerald-ape-042")
   await expect(page.getByRole("heading", { level: 1, name: "Emerald Ape #042" })).toBeVisible()
-  // O preço aparece no cabeçalho (desktop) e na barra de ação (mobile): vale o visível.
   await expect(page.getByText(/^1\.19 ETH/).filter({ visible: true })).toBeVisible()
 
   await mock.updateNft("emerald-ape-042", { editionId: "1-50", priceEth: "1.45" })

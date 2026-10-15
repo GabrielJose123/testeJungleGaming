@@ -1,12 +1,5 @@
 import type { CreateOrderRequest } from "@/api/types"
 
-/**
- * Chaves de idempotência por tentativa de compra (docs/design.md §7).
- * O mesmo conteúdo (cotação + carteira + rede + dados) reaproveita a mesma chave — inclusive
- * depois de refresh, via sessionStorage —, então clique repetido ou reenvio após timeout nunca
- * cria outro pedido. Conteúdo diferente gera chave nova.
- */
-
 const ATTEMPTS_KEY = "kurio:order-attempts"
 const PENDING_PREFIX = "kurio:pending-order:"
 
@@ -24,13 +17,11 @@ function writeAttempts(map: AttemptMap) {
   try {
     sessionStorage.setItem(ATTEMPTS_KEY, JSON.stringify(map))
   } catch {
-    // storage indisponível: a chave vale só nesta execução
   }
 }
 
 const memoryAttempts: AttemptMap = {}
 
-/** Impressão digital estável do pedido (chaves ordenadas). */
 export function orderFingerprint(request: CreateOrderRequest) {
   const { collector } = request
   return JSON.stringify([
@@ -57,17 +48,12 @@ export function getAttemptKey(request: CreateOrderRequest) {
   return key
 }
 
-/** Libera a chave quando o pedido termina recusado: uma nova tentativa deve gerar outro pedido. */
 export function releaseAttemptKey(idempotencyKey: string) {
   const attempts = readAttempts()
   for (const [fingerprint, key] of Object.entries(attempts)) if (key === idempotencyKey) delete attempts[fingerprint]
   for (const [fingerprint, key] of Object.entries(memoryAttempts)) if (key === idempotencyKey) delete memoryAttempts[fingerprint]
   writeAttempts(attempts)
 }
-
-// ---------------------------------------------------------------------------
-// Pedido pendente por usuário (retomada após refresh/reconexão)
-// ---------------------------------------------------------------------------
 
 export interface PendingOrderRef {
   orderId: string
@@ -87,7 +73,6 @@ export function setPendingOrder(userId: string, ref: PendingOrderRef) {
   try {
     localStorage.setItem(PENDING_PREFIX + userId, JSON.stringify(ref))
   } catch {
-    // ignore
   }
 }
 
@@ -96,6 +81,5 @@ export function clearPendingOrder(userId: string, orderId?: string) {
     const current = getPendingOrder(userId)
     if (!orderId || current?.orderId === orderId) localStorage.removeItem(PENDING_PREFIX + userId)
   } catch {
-    // ignore
   }
 }

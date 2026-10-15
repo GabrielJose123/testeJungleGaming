@@ -12,7 +12,6 @@ export function useCurrentUserId() {
   return useSession()?.user.id ?? null
 }
 
-/** Escopo das query keys privadas: usuário logado ou carrinho do visitante. */
 export function usePrivateScope() {
   return privateScope(useCurrentUserId(), getGuestCartId())
 }

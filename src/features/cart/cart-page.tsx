@@ -25,7 +25,6 @@ function describeIssue(issue: CartItemIssue) {
   }
 }
 
-/** Figma: Desktop / Carrinho (11:1278) e Mobile / Carrinho (16:360). */
 export function CartPage() {
   const cart = useCart()
   const updateItem = useUpdateCartItem()

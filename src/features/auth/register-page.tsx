@@ -11,7 +11,6 @@ import { AuthCard } from "./auth-card"
 
 const route = getRouteApi("/cadastro")
 
-/** Figma: Desktop / Cadastro (9:1022) e Mobile / Cadastro (16:1228). Validação e conflito (409) vêm da API. */
 export function RegisterPage() {
   const search = route.useSearch()
   const router = useRouter()

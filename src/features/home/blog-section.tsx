@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils"
 import type { BlogPost } from "@/types/catalog"
 
-/** Figma: "Blog" — "Diário da Cunhagem", 4 cards. Artigos estão fora do escopo da entrega. */
 export function BlogSection({ posts, className }: { posts: BlogPost[]; className?: string }) {
   return (
     <section aria-labelledby="blog-title" className={cn("flex flex-col items-center gap-10", className)}>

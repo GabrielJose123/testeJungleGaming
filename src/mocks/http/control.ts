@@ -13,11 +13,6 @@ import { connectedSockets, disconnectAllSockets, emitRaw } from "../realtime/soc
 import { getScenario, isScenario, SCENARIOS, setScenario } from "../scenarios"
 import { api, errorResponse, json, noContent, readJson } from "./route"
 
-/**
- * Rotas de controle do servidor simulado (`/api/__mock/*`): reset, cenário e disparo de eventos.
- * Não passam pelas condições de rede do cenário. Existem só com os mocks ativos.
- */
-
 function guard(handler: (request: Request, params: Record<string, string>) => Promise<Response> | Response) {
   return async ({ request, params }: { request: Request; params: Record<string, string | readonly string[] | undefined> }) => {
     try {
@@ -51,7 +46,6 @@ export const controlHandlers = [
     }),
   ),
 
-  /** Altera preço/estoque e publica `nft.updated` (REST e socket ficam consistentes). */
   http.patch(
     api("/__mock/nfts/:id"),
     guard(async (request, params) => {
@@ -65,11 +59,6 @@ export const controlHandlers = [
     }),
   ),
 
-  /**
-   * Reenvia eventos já publicados para testar a tolerância do cliente:
-   * `duplicate` repete o último evento do recurso (mesmo eventId);
-   * `stale` reenvia o evento anterior com um eventId novo (versão antiga).
-   */
   http.post(
     api("/__mock/events/replay"),
     guard(async (request) => {

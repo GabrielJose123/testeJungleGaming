@@ -7,12 +7,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design tokens extracted from the Figma file (variables collection).
- * See docs/design-tokens.md for the full mapping.
- */
 @theme {
-  /* Palette (Figma: color/*) */
   --color-ink: #140d0a;
   --color-surface-card: #241612;
   --color-surface-raised: #2f1d15;
@@ -30,7 +25,6 @@
   --color-danger: #e5654b;
   --color-success: #46a358;
 
-  /* Typography (Figma: font/family = Roboto Mono) */
   --font-sans: "Roboto Mono", ui-monospace, monospace;
   --font-mono: "Roboto Mono", ui-monospace, monospace;
 
@@ -61,7 +55,6 @@
   --text-display: 43px;
   --text-display--line-height: 70px;
 
-  /* Radii */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -72,15 +65,12 @@
   --radius-3xl: 20px;
   --radius-4xl: 24px;
 
-  /* Shadows */
   --shadow-field: 0 0 10px rgba(10, 6, 4, 0.45);
   --shadow-tabbar: 0 -6px 24px rgba(10, 6, 4, 0.55);
 
-  /* Layout */
   --container-page: 1200px;
 }
 
-/* shadcn/ui semantic tokens, mapped onto the Figma palette (dark only). */
 @theme inline {
   --font-heading: var(--font-sans);
   --color-ring: var(--ring);

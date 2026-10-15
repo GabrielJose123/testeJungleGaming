@@ -1,4 +1,3 @@
-/** PRNG determinístico (mulberry32): mesma semente, mesma sequência. */
 export function createRandom(seed: number) {
   let state = seed >>> 0
   return () => {

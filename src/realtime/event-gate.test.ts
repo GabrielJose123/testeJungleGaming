@@ -45,7 +45,6 @@ describe("EventGate", () => {
     gate.accept(event("e1", 1, "a"))
     gate.accept(event("e2", 1, "b"))
     gate.accept(event("e3", 1, "c"))
-    // e1 saiu da memória, mas a versão ainda barra o reprocessamento.
     expect(gate.accept(event("e1", 1, "a"))).toBe("stale")
   })
 

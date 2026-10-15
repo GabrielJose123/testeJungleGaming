@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
 import type { PromoCard } from "@/types/catalog"
 
-/** Figma: "Promos" — dois cards de 586 × 250 lado a lado (empilhados abaixo de `lg`). */
 export function PromoCards({ promos, className }: { promos: PromoCard[]; className?: string }) {
   return (
     <section aria-label="Coleções em destaque" className={cn("grid gap-7 lg:grid-cols-2", className)}>

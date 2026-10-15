@@ -1,22 +1,12 @@
-/**
- * Contratos tipados entre transporte (REST/Socket.IO), estado e interface.
- * Comportamento e regras: docs/design.md. Os mocks (src/mocks) implementam estes tipos.
- */
 
-/** Valor em ETH como string decimal (ex.: "1.19", "0.0021"). Nunca `number`. */
 export type EthAmount = string
-/** Data ISO-8601 em UTC. */
 export type IsoDateTime = string
 
 export type Network = "ethereum" | "polygon" | "solana"
 export const NETWORKS: readonly Network[] = ["ethereum", "polygon", "solana"]
 
-// ---------------------------------------------------------------------------
-// Erros
-// ---------------------------------------------------------------------------
 
 export type ApiErrorCode =
-  // 400
   | "VALIDATION_ERROR"
   | "COUPON_INVALID"
   | "COUPON_EXPIRED"
@@ -24,20 +14,16 @@ export type ApiErrorCode =
   | "INVALID_CURRENT_PASSWORD"
   | "AVATAR_INVALID"
   | "IDEMPOTENCY_KEY_REQUIRED"
-  // 401
   | "UNAUTHENTICATED"
   | "SESSION_EXPIRED"
   | "INVALID_CREDENTIALS"
-  // 403
   | "FORBIDDEN"
   | "WALLET_REJECTED"
-  // 404
   | "NOT_FOUND"
   | "NFT_NOT_FOUND"
   | "ORDER_NOT_FOUND"
   | "QUOTE_NOT_FOUND"
   | "ROUTE_NOT_FOUND"
-  // 409
   | "EMAIL_TAKEN"
   | "OUT_OF_STOCK"
   | "EDITION_UNAVAILABLE"
@@ -48,11 +34,9 @@ export type ApiErrorCode =
   | "WALLET_ROLE_TAKEN"
   | "WALLET_DUPLICATE"
   | "WALLET_NOT_CONNECTED"
-  // 5xx
   | "INTERNAL_ERROR"
   | "SERVICE_UNAVAILABLE"
 
-/** Códigos gerados no cliente quando não há resposta HTTP utilizável. */
 export type ClientErrorCode = "NETWORK_ERROR" | "TIMEOUT" | "CANCELED" | "UNKNOWN"
 
 export type FieldErrors = Record<string, string>
@@ -70,9 +54,6 @@ export interface ApiErrorBody {
   error: ApiErrorPayload
 }
 
-// ---------------------------------------------------------------------------
-// Sessão e conta
-// ---------------------------------------------------------------------------
 
 export interface User {
   id: string
@@ -102,9 +83,6 @@ export interface LoginRequest {
   guestCartId?: string
 }
 
-// ---------------------------------------------------------------------------
-// NFTs
-// ---------------------------------------------------------------------------
 
 export type NftSort = "recent" | "price-asc" | "price-desc" | "name-asc"
 export const NFT_SORTS: readonly NftSort[] = ["recent", "price-asc", "price-desc", "name-asc"]
@@ -135,11 +113,9 @@ export interface NftSummary {
   image: string
   collection: CollectionRef
   network: Network
-  /** Menor preço entre as edições à venda. */
   priceEth: EthAmount
   previousPriceEth: EthAmount | null
   badge: string | null
-  /** Total disponível somando as edições à venda. */
   available: number
   version: number
   createdAt: IsoDateTime
@@ -150,7 +126,6 @@ export type EditionStatus = "available" | "sold-out" | "unavailable"
 export interface Edition {
   id: string
   label: string
-  /** `null` = edição aberta (sem limite de tiragem). */
   supply: number | null
   available: number
   priceEth: EthAmount
@@ -190,17 +165,11 @@ export interface NftPage {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Favoritos
-// ---------------------------------------------------------------------------
 
 export interface FavoritesResponse {
   nftIds: string[]
 }
 
-// ---------------------------------------------------------------------------
-// Carrinho e cotação
-// ---------------------------------------------------------------------------
 
 export interface PriceSummary {
   subtotalEth: EthAmount
@@ -215,7 +184,6 @@ export interface AppliedCoupon {
   code: string
   description: string
   kind: CouponKind
-  /** Percentual (ex.: "10") ou valor fixo em ETH. */
   value: string
 }
 
@@ -291,9 +259,6 @@ export interface Quote {
   expiresAt: IsoDateTime
 }
 
-// ---------------------------------------------------------------------------
-// Pedidos
-// ---------------------------------------------------------------------------
 
 export type OrderStatus = "pending" | "confirmed" | "rejected"
 export const TERMINAL_ORDER_STATUSES: readonly OrderStatus[] = ["confirmed", "rejected"]
@@ -328,7 +293,6 @@ export interface Order {
   network: Network
   wallet: { id: string; label: string; address: string }
   collector: CollectorDetails
-  /** Snapshot no momento da criação: não muda com o catálogo. */
   items: QuoteItem[]
   coupon: AppliedCoupon | null
   summary: PriceSummary
@@ -340,9 +304,6 @@ export interface OrderListResponse {
   items: Order[]
 }
 
-// ---------------------------------------------------------------------------
-// Perfil
-// ---------------------------------------------------------------------------
 
 export type Profile = User
 
@@ -353,7 +314,6 @@ export interface UpdateProfileRequest {
 }
 
 export interface UpdateAvatarRequest {
-  /** data:image/(png|jpeg|webp);base64,... — até 1 MB. */
   dataUrl: string
 }
 
@@ -362,9 +322,6 @@ export interface ChangePasswordRequest {
   newPassword: string
 }
 
-// ---------------------------------------------------------------------------
-// Carteiras
-// ---------------------------------------------------------------------------
 
 export type WalletRole = "primary" | "secondary"
 export type WalletConnection = "connected" | "disconnected"
@@ -393,16 +350,11 @@ export interface CreateWalletRequest {
 
 export type UpdateWalletRequest = Partial<CreateWalletRequest>
 
-// ---------------------------------------------------------------------------
-// Tempo real (Socket.IO)
-// ---------------------------------------------------------------------------
 
 export interface RealtimeEvent<TType extends string, TResource extends string, TData> {
-  /** Identidade estável: duplicatas compartilham o mesmo eventId. */
   eventId: string
   type: TType
   resource: { type: TResource; id: string }
-  /** Versão do recurso após a mudança. */
   version: number
   occurredAt: IsoDateTime
   data: TData
@@ -432,7 +384,6 @@ export interface ServerToClientEvents {
   "order.updated": (event: OrderUpdatedEvent) => void
 }
 
-/** O cliente não emite eventos: apenas escuta. */
 export type ClientToServerEvents = Record<string, never>
 
 export interface SocketAuth {

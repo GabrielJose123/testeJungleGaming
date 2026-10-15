@@ -7,7 +7,6 @@ interface PaginationProps {
   className?: string
 }
 
-/** Figma: "Pagination" — quadrados de 35 px, página atual preenchida. */
 export function Pagination({ page, pageCount, onPageChange, className }: PaginationProps) {
   const pages = Array.from({ length: pageCount }, (_, index) => index + 1)
   const isLast = page >= pageCount

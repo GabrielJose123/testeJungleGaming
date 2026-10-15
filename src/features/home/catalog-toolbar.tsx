@@ -13,7 +13,6 @@ interface CatalogTabsProps {
   className?: string
 }
 
-/** Figma: "Tabs" — o ativo em `amber` com sublinhado de 2 px. */
 export function CatalogTabs({ tabs, activeTab, onTabChange, className }: CatalogTabsProps) {
   return (
     <div role="group" aria-label="Seção do catálogo" className={cn("flex items-start gap-4 lg:gap-5", className)}>
@@ -46,7 +45,6 @@ interface SortSelectProps {
   className?: string
 }
 
-/** Figma: "Sort" — "Ordenar por: Listados recentemente" com seta para baixo. */
 export function SortSelect({ options, value, onValueChange, className }: SortSelectProps) {
   return (
     <div className={cn("flex items-center gap-2 text-body-md leading-normal text-cream", className)}>

@@ -4,10 +4,6 @@ import { cn } from "@/lib/utils"
 
 import { NftCard } from "./nft-card"
 
-/**
- * Faixa "Mais desta coleção" / "Colecionadores também viram": 5 cards no desktop,
- * rolagem horizontal com snap no mobile.
- */
 export function RelatedNfts({ title, collectionId, excludeId, className }: { title: string; collectionId?: string; excludeId?: string; className?: string }) {
   const related = useNfts({ collections: collectionId ? [collectionId] : undefined, pageSize: 6 })
   const items = (related.data?.items ?? []).filter((nft) => nft.id !== excludeId).slice(0, 5)

@@ -1,9 +1,5 @@
 import type { CollectorDetails, Network } from "@/api/types"
 
-/**
- * Rascunho do checkout em sessionStorage: se a sessão expirar no meio da compra, o usuário
- * volta do login e encontra os dados preenchidos (o carrinho já vive no servidor).
- */
 export interface CheckoutDraft {
   collector: CollectorDetails
   walletId: string
@@ -26,7 +22,6 @@ export function saveCheckoutDraft(draft: CheckoutDraft) {
   try {
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
   } catch {
-    // storage indisponível
   }
 }
 
@@ -34,6 +29,5 @@ export function clearCheckoutDraft() {
   try {
     sessionStorage.removeItem(DRAFT_KEY)
   } catch {
-    // ignore
   }
 }

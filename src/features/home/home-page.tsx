@@ -23,11 +23,6 @@ import { PromoCards } from "./promo-cards"
 const route = getRouteApi("/")
 const SEARCH_DEBOUNCE_MS = 300
 
-/**
- * Tela Início — Figma: Desktop / Início (2:2) e Mobile / Início (14:5226).
- * Busca, filtros, ordenação e página vivem na URL (refresh e histórico restauram o estado);
- * o catálogo vem da API via TanStack Query.
- */
 export function HomePage() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
@@ -36,11 +31,9 @@ export function HomePage() {
   const update = (next: CatalogSearch, replace = false) => void navigate({ search: next, replace, resetScroll: false })
   const setFilters = (patch: Partial<Omit<CatalogSearch, "page">>, replace = false) => update(withFilters(search, patch), replace)
 
-  // Busca digitada: aplica com debounce e sem empilhar uma entrada de histórico por tecla.
   const [query, setQuery] = useState(search.q ?? "")
   const [syncedQuery, setSyncedQuery] = useState(search.q)
   if (search.q !== syncedQuery) {
-    // A URL mudou por fora (histórico, link): o campo acompanha.
     setSyncedQuery(search.q)
     setQuery(search.q ?? "")
   }

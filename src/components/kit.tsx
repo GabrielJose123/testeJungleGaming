@@ -5,11 +5,6 @@ import { cn } from "@/lib/utils"
 
 import { buttonStyles } from "./kit-styles"
 
-/**
- * Peças visuais compartilhadas pelas telas internas (Detalhe, Carrinho, Pagamento, Perfil,
- * Carteiras, Login e Cadastro), extraídas das capturas do Figma em docs/figma-export.
- */
-
 export function Breadcrumb({ items }: { items: Array<{ label: string; to?: string }> }) {
   return (
     <nav aria-label="Trilha de navegação" className="mb-3 text-body font-bold text-cream">
@@ -31,7 +26,6 @@ export function Breadcrumb({ items }: { items: Array<{ label: string; to?: strin
   )
 }
 
-/** Título de seção em laranja com linha inferior ("Mais desta coleção"). */
 export function SectionHeading({ id, children, className }: { id?: string; children: React.ReactNode; className?: string }) {
   return (
     <h2 id={id} className={cn("border-b border-line pb-2 text-body-lg font-bold text-amber", className)}>
@@ -55,14 +49,12 @@ const fieldBase =
 
 interface TextFieldProps extends Omit<React.ComponentProps<"input">, "id"> {
   label: string
-  /** Rótulo visível (desktop do Perfil) ou só para leitores de tela (Login/Cadastro, que usam placeholder). */
   hideLabel?: boolean
   required?: boolean
   error?: string
   inputClassName?: string
 }
 
-/** Campo com rótulo, erro associado e botão de mostrar/ocultar senha. */
 export function TextField({ label, hideLabel = false, required, error, className, inputClassName, type = "text", ...props }: TextFieldProps) {
   const id = useId()
   const [reveal, setReveal] = useState(false)
@@ -118,7 +110,6 @@ export function EyeIcon({ off }: { off: boolean }) {
   )
 }
 
-/** Botão redondo laranja de quantidade (− / +) usado no Detalhe e no Carrinho. */
 export function QuantityStepper({
   value,
   min = 1,
@@ -155,7 +146,6 @@ export function QuantityStepper({
   )
 }
 
-/** Linha "Ou continue com" + botões sociais (decorativos: o desafio não tem OAuth). */
 export function SocialLogin() {
   return (
     <div className="flex w-full flex-col gap-3">
@@ -180,7 +170,6 @@ export function SocialLogin() {
   )
 }
 
-/** Moldura com o shimmer usado nos estados de carregamento. */
 export function Shimmer({ className }: { className?: string }) {
   return <div aria-hidden className={cn("animate-pulse rounded-xs bg-surface-card", className)} />
 }

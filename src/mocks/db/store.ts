@@ -2,13 +2,7 @@ import { couponFixtures, favoriteFixtures, userFixtures, walletFixtures } from "
 import { buildNftFixtures, collections } from "../fixtures/nfts"
 import type { MockDatabase } from "./schema"
 
-/**
- * Banco em memória do servidor simulado, persistido em localStorage para sobreviver a refresh.
- * `resetDatabase()` restaura integralmente o cenário conhecido (fixtures).
- */
-
 const STORAGE_KEY = "kurio:mock-db"
-// 2: artes em WebP (bancos salvos com caminhos .png são descartados).
 const SCHEMA_VERSION = 2
 
 export function createSeedDatabase(): MockDatabase {
@@ -44,7 +38,6 @@ function load(): MockDatabase {
       const parsed = JSON.parse(raw) as MockDatabase
       if (parsed.schemaVersion === SCHEMA_VERSION) return parsed
     } catch {
-      // Conteúdo corrompido: recomeça do seed.
     }
   }
   return createSeedDatabase()
@@ -62,11 +55,9 @@ export function persist() {
   try {
     storage()?.setItem(STORAGE_KEY, JSON.stringify(database))
   } catch {
-    // Cota excedida ou storage bloqueado: segue só em memória.
   }
 }
 
-/** Aplica uma mutação e persiste. */
 export function mutate<T>(change: (data: MockDatabase) => T): T {
   const result = change(db())
   persist()
@@ -78,7 +69,6 @@ export function resetDatabase() {
   persist()
 }
 
-/** Substitui o banco (usado pelos testes unitários). */
 export function setDatabase(next: MockDatabase) {
   database = next
 }

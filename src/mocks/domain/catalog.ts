@@ -32,7 +32,6 @@ function sellable(editions: Edition[]) {
   return editions.filter((edition) => edition.status === "available")
 }
 
-/** Preço de vitrine: menor preço entre as edições à venda (ou entre todas, se nenhuma estiver). */
 export function displayPrice(nft: NftRecord) {
   const candidates = sellable(nft.editions).length > 0 ? sellable(nft.editions) : nft.editions
   return candidates.reduce((min, edition) => (compareEth(edition.priceEth, min) < 0 ? edition.priceEth : min), candidates[0].priceEth)
@@ -85,10 +84,6 @@ export function toDetail(nft: NftRecord, data: MockDatabase = db()): NftDetail {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Listagem
-// ---------------------------------------------------------------------------
-
 function csv(value: string | null) {
   return value
     ? value
@@ -98,7 +93,6 @@ function csv(value: string | null) {
     : []
 }
 
-/** Converte e valida a query string de `GET /nfts`. */
 export function parseListParams(search: URLSearchParams): Required<Pick<NftListParams, "sort" | "tab" | "page" | "pageSize">> & NftListParams {
   const errors: Record<string, string> = {}
   const sort = (search.get("sort") ?? "recent") as NftSort
@@ -161,7 +155,6 @@ export function listNfts(params: ReturnType<typeof parseListParams>, data: MockD
   const totalPages = Math.max(1, Math.ceil(total / params.pageSize))
   const start = (params.page - 1) * params.pageSize
 
-  // Facetas: cada grupo conta considerando os demais filtros (e ignorando o próprio).
   const collectionFacets: Facet[] = data.collections.map((collection) => ({
     id: collection.id,
     label: collection.name,
@@ -188,10 +181,6 @@ export function listNfts(params: ReturnType<typeof parseListParams>, data: MockD
   }
 }
 
-// ---------------------------------------------------------------------------
-// Mudanças de preço/estoque → nft.updated
-// ---------------------------------------------------------------------------
-
 export interface NftChange {
   editionId?: string
   priceEth?: string
@@ -199,10 +188,6 @@ export interface NftChange {
   status?: Edition["status"]
 }
 
-/**
- * Aplica uma mudança de preço/estoque, incrementa a versão e publica `nft.updated`
- * com o estado completo (o cliente pode aplicar sem depender de eventos anteriores).
- */
 export function updateNft(nftId: string, change: NftChange) {
   return mutate((data) => {
     const nft = requireNft(nftId, data)
@@ -246,7 +231,6 @@ export function updateNft(nftId: string, change: NftChange) {
   })
 }
 
-/** Ao mudar o preço do NFT inteiro, mantém a proporção entre as edições. */
 function scaleEditionPrice(edition: Edition, basePrice: string, newBasePrice: string) {
   const ratio = eth(edition.priceEth).dividedBy(basePrice)
   return toEthAmount(eth(newBasePrice).times(ratio).toDecimalPlaces(6))

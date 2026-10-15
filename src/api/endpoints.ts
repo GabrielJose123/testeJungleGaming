@@ -27,12 +27,10 @@ import type {
   WalletListResponse,
 } from "./types"
 
-/** Opções comuns: `signal` permite cancelar a requisição (TanStack Query repassa o seu). */
 interface RequestOptions {
   signal?: AbortSignal
 }
 
-/** Serializa os parâmetros do catálogo (arrays como CSV, vazios omitidos). */
 export function toNftQuery(params: NftListParams) {
   const query: Record<string, string> = {}
   for (const [key, value] of Object.entries(params)) {

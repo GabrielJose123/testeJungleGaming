@@ -7,10 +7,6 @@ import { profileApi, walletsApi } from "../endpoints"
 import { queryKeys } from "../query-keys"
 import type { CreateWalletRequest, Profile, UpdateProfileRequest, UpdateWalletRequest, Wallet, WalletListResponse } from "../types"
 
-// ---------------------------------------------------------------------------
-// Perfil
-// ---------------------------------------------------------------------------
-
 export function useProfile() {
   const userId = useCurrentUserId()
   return useQuery({
@@ -21,7 +17,6 @@ export function useProfile() {
   })
 }
 
-/** Mantém cache do perfil e dados da sessão (nome/e-mail/avatar no cabeçalho) em sincronia. */
 function useProfileMutation<TVariables>(mutationFn: (variables: TVariables) => Promise<Profile>) {
   const queryClient = useQueryClient()
   const userId = useCurrentUserId()
@@ -45,10 +40,6 @@ export function useUpdateAvatar() {
 export function useChangePassword() {
   return useMutation({ mutationFn: profileApi.changePassword })
 }
-
-// ---------------------------------------------------------------------------
-// Carteiras
-// ---------------------------------------------------------------------------
 
 export function useWallets() {
   const userId = useCurrentUserId()
@@ -84,7 +75,6 @@ export function useUpdateWallet() {
   return useWalletMutation(({ id, ...body }: UpdateWalletRequest & { id: string }) => walletsApi.update(id, body))
 }
 
-/** Simula a conexão (pode ser recusada: 403 WALLET_REJECTED). */
 export function useConnectWallet() {
   return useWalletMutation((id: string) => walletsApi.connect(id))
 }

@@ -18,7 +18,6 @@ interface CatalogFiltersProps {
 
 const formatEth = (value: number) => value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-/** Figma: "Filters" — painel de 310 px com coleções, faixa de preço e rede. */
 export function CatalogFilters({
   collections,
   networks,
@@ -99,10 +98,6 @@ function FilterGroup({ title, className, children }: { title: string; className?
   )
 }
 
-/**
- * Linha de filtro: o Figma não desenha checkbox, o item selecionado fica em `amber`.
- * Para não depender só da cor, o estado também é exposto via `aria-pressed`.
- */
 function FilterRow({
   option,
   selected,

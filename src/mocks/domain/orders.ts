@@ -24,18 +24,12 @@ import { newId, randomHex } from "./ids"
 import { checkCoupon, computeSummary, lineTotal } from "./pricing"
 
 export const QUOTE_TTL_MS = 5 * 60 * 1000
-/** Tempo até o pedido sair de `pending` na simulação. */
 export const ORDER_SETTLE_MS = 2500
-
-// ---------------------------------------------------------------------------
-// Cotação
-// ---------------------------------------------------------------------------
 
 function isNetwork(value: unknown): value is Network {
   return typeof value === "string" && NETWORKS.includes(value as Network)
 }
 
-/** Calcula a cotação a partir do carrinho e do catálogo atuais (sem persistir). */
 export function priceCart(userId: string, network: Network, data: MockDatabase, now = new Date()) {
   const cart = userCart(userId, data)
   const dto = toCartDto(cart, data, now)
@@ -115,10 +109,6 @@ function sameQuote(a: Pick<Quote, "items" | "summary">, b: Pick<Quote, "items" |
   )
 }
 
-// ---------------------------------------------------------------------------
-// Pedido
-// ---------------------------------------------------------------------------
-
 function validateCollector(collector: Partial<CollectorDetails> | undefined) {
   const errors: Record<string, string> = {}
   if (!collector || typeof collector.fullName !== "string" || collector.fullName.trim().length < 3) {
@@ -140,7 +130,6 @@ function toOrder({ userId: _u, outcome: _o, settleAt: _s, purchasedLines: _p, ..
   return order
 }
 
-/** Aplica efeitos de cenário que acontecem "durante a compra" (uma vez por cenário). */
 function applyPurchaseScenario(quote: QuoteRecord) {
   const scenario = getScenario()
   const first = quote.items[0]
@@ -171,7 +160,6 @@ export function createOrder(userId: string, idempotencyKey: string | null, body:
   const payloadHash = hashPayload(request)
   const data = db()
 
-  // 1) Idempotência antes de qualquer efeito.
   const decision = resolveIdempotency(data.idempotency, userId, idempotencyKey, payloadHash)
   if (decision.kind === "replay") {
     const existing = data.orders.find((order) => order.id === decision.orderId)!
@@ -183,7 +171,6 @@ export function createOrder(userId: string, idempotencyKey: string | null, body:
     })
   }
 
-  // 2) Cotação e carteira.
   const quote = data.quotes.find((entry) => entry.id === request.quoteId && entry.userId === userId)
   if (!quote) throw notFound("QUOTE_NOT_FOUND", "Cotação não encontrada. Gere uma nova revisão.")
   if (new Date(quote.expiresAt).getTime() <= now.getTime()) {
@@ -198,7 +185,6 @@ export function createOrder(userId: string, idempotencyKey: string | null, body:
     throw new MockApiError(409, "WALLET_NOT_CONNECTED", "Conecte a carteira antes de confirmar o pedido.")
   }
 
-  // 3) Revalidação contra o catálogo atual (preço, estoque, cupom, taxa).
   applyPurchaseScenario(quote)
   const current = priceCart(userId, quote.network, db(), now)
   if (!sameQuote(quote, current)) {
@@ -208,7 +194,6 @@ export function createOrder(userId: string, idempotencyKey: string | null, body:
     })
   }
 
-  // 4) Cria o pedido pendente e registra a chave.
   return mutate((store) => {
     store.orderSequence += 1
     const record: OrderRecord = {
@@ -255,10 +240,6 @@ export function listOrders(userId: string, status?: OrderStatus): Order[] {
     .map(toOrder)
 }
 
-// ---------------------------------------------------------------------------
-// Liquidação (pending → confirmed | rejected), com eventos
-// ---------------------------------------------------------------------------
-
 const timers = new Map<string, ReturnType<typeof setTimeout>>()
 
 function scheduleSettlement(order: OrderRecord) {
@@ -274,7 +255,6 @@ function scheduleSettlement(order: OrderRecord) {
   )
 }
 
-/** Retoma os pedidos pendentes depois de um refresh (o servidor simulado vive na página). */
 export function resumePendingOrders() {
   for (const order of db().orders) {
     if (order.status === "pending") {
@@ -295,7 +275,6 @@ function settleIfDue(order: OrderRecord, now = new Date()): OrderRecord {
     let outcome = record.outcome
 
     if (outcome === "confirm") {
-      // Baixa de estoque; se algo esgotou no meio do caminho, recusa sem efeitos parciais.
       const shortage = record.purchasedLines.some((line) => {
         const edition = findNft(line.nftId, data)?.editions.find((entry) => entry.id === line.editionId)
         return !edition || edition.available < line.quantity

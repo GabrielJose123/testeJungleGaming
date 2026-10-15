@@ -9,11 +9,6 @@ import { isScenario, setScenario } from "./scenarios"
 
 export const worker = setupWorker(...controlHandlers, ...httpHandlers, ...socketHandlers)
 
-/**
- * Liga o servidor simulado antes do primeiro render.
- * `?scenario=<nome>` seleciona o cenário; `?reset=1` restaura o banco inicial.
- * Os dois parâmetros são removidos da URL depois de aplicados.
- */
 export async function startMocks() {
   const url = new URL(window.location.href)
   const scenario = url.searchParams.get("scenario")

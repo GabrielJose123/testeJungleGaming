@@ -20,7 +20,6 @@ const route = getRouteApi("/nft/$nftId")
 
 const NETWORK_LABEL = { ethereum: "Ethereum", polygon: "Polygon", solana: "Solana" } as const
 
-/** Figma: Desktop / Detalhes do NFT (10:244) e Mobile / Detalhes (15:5536). */
 export function NftDetailPage() {
   const { nftId } = route.useParams()
   const nft = useNft(nftId)
@@ -92,7 +91,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
   const [activeImage, setActiveImage] = useState(0)
   const [tab, setTab] = useState<"details" | "reviews">("details")
 
-  // Padrão: a edição disponível mais barata (a mesma do preço exibido no catálogo).
   const cheapest = nft.editions.filter((edition) => edition.status === "available").sort((a, b) => compareEth(a.priceEth, b.priceEth))[0]
   const selected = nft.editions.find((edition) => edition.id === editionId) ?? cheapest
   const limit = selected ? Math.min(selected.available, selected.maxPerOrder) : 0
@@ -108,7 +106,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
   return (
     <>
       <div className="grid gap-6 lg:grid-cols-[100px_minmax(0,445px)_1fr] lg:gap-7">
-        {/* Miniaturas */}
         <ul className="order-2 hidden flex-col gap-4 lg:order-none lg:flex" aria-label="Galeria">
           {gallery.slice(0, 4).map((image, index) => (
             <li key={`${image}-${index}`}>
@@ -125,7 +122,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
           ))}
         </ul>
 
-        {/* Arte principal */}
         <div className="relative -mx-6 -mt-4 lg:mx-0 lg:mt-0 lg:bg-surface-card lg:p-5">
           <div className="absolute top-2 right-6 left-6 z-10 flex justify-between lg:hidden">
             <button type="button" onClick={() => router.history.back()} aria-label="Voltar" className="flex size-9 items-center justify-center rounded-full border border-line-soft bg-ink/60 text-cream">
@@ -152,7 +148,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
           <img src="/assets/icons/zoom-button.svg" alt="" aria-hidden width={32} height={32} className="absolute top-2 right-2 hidden lg:block" />
         </div>
 
-        {/* Informações */}
         <div className="-mx-6 flex flex-col gap-4 rounded-t-4xl bg-surface-card px-6 pt-6 pb-40 lg:mx-0 lg:rounded-none lg:bg-transparent lg:p-0">
           <div className="flex items-start justify-between gap-3">
             <h1 className="text-title-lg leading-8 font-bold text-cream lg:text-heading-lg">{nft.name}</h1>
@@ -213,7 +208,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
             </div>
           </fieldset>
 
-          {/* Ações: barra fixa no mobile, linha no desktop */}
           <div className="fixed inset-x-0 bottom-0 z-30 flex flex-col gap-4 rounded-t-4xl bg-surface-raised px-6 pt-5 pb-6 lg:static lg:flex-row lg:items-center lg:justify-between lg:bg-transparent lg:p-0">
             <div className="flex items-center justify-between gap-3">
               <span className="text-body text-cream lg:hidden">Qtd.</span>
@@ -284,7 +278,6 @@ function NftDetailContent({ nft }: { nft: NftDetail }) {
         </div>
       </div>
 
-      {/* Abas (desktop) */}
       <section className="mt-20 hidden lg:block">
         <div role="tablist" aria-label="Informações do NFT" className="flex gap-8 border-b border-line">
           {(

@@ -15,26 +15,16 @@ export type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>
 
 let socket: RealtimeSocket | null = null
 
-/**
- * O socket.io-client é carregado sob demanda: ele captura o `WebSocket` global ao ser avaliado,
- * então só pode ser avaliado depois que os mocks (MSW) substituírem o `WebSocket`. Carregá-lo à parte
- * também tira ~15 kB do caminho crítico do primeiro render.
- */
 let ioModule: Promise<typeof import("socket.io-client")> | null = null
 function loadIo() {
   ioModule ??= import("socket.io-client")
   return ioModule
 }
 
-/** Socket atual (para hooks de componentes registrarem listeners próprios). */
 export function getSocket() {
   return socket
 }
 
-/**
- * Após reconectar, eventos podem ter sido perdidos: reconcilia os recursos ativos com o REST.
- * `refetchType: "active"` só refaz o que está na tela; o resto revalida quando voltar a ser usado.
- */
 export function reconcile(queryClient: QueryClient) {
   return Promise.all([
     queryClient.invalidateQueries({ queryKey: queryKeys.nfts.all(), refetchType: "active" }),
@@ -42,16 +32,10 @@ export function reconcile(queryClient: QueryClient) {
   ])
 }
 
-/**
- * Liga o cliente Socket.IO ao cache. Retorna `stop()`, que remove todos os listeners e
- * desconecta — chamado no unmount do provider. Na troca de identidade (login, logout,
- * expiração), o socket anterior é encerrado e um novo é aberto com o token atual.
- */
 export function startRealtime(queryClient: QueryClient) {
   const gate = new EventGate()
   let current: RealtimeSocket | null = null
   let hasConnectedBefore = false
-  /** Incrementa a cada open/close: um carregamento atrasado do módulo não abre socket obsoleto. */
   let generation = 0
 
   const handleNft: ServerToClientEvents["nft.updated"] = (event) => applyNftUpdated(queryClient, gate, event)
@@ -62,7 +46,6 @@ export function startRealtime(queryClient: QueryClient) {
     hasConnectedBefore = true
   }
   const handleDisconnect = (reason: Socket.DisconnectReason) => {
-    // "io client disconnect" = encerramos de propósito; o resto tenta reconectar sozinho.
     realtimeStore.setConnection(reason === "io client disconnect" ? "disconnected" : "reconnecting")
   }
   const handleConnectError = () => realtimeStore.setConnection("reconnecting")
@@ -80,7 +63,6 @@ export function startRealtime(queryClient: QueryClient) {
     const instance: RealtimeSocket = io(SOCKET_URL, {
       path: SOCKET_PATH,
       transports: ["websocket"],
-      // Função: a cada (re)conexão envia o token vigente.
       auth: (callback) => callback(getToken() ? { token: getToken() } : {}),
       reconnectionDelay: 500,
       reconnectionDelayMax: 5000,
@@ -111,7 +93,6 @@ export function startRealtime(queryClient: QueryClient) {
   open()
 
   const stopIdentityWatch = onIdentityChange(() => {
-    // Nada da sessão anterior pode atualizar a nova: fecha, zera o portão e reabre.
     close()
     gate.reset()
     realtimeStore.reset()

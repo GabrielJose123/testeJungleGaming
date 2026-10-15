@@ -1,10 +1,6 @@
 import { PageShell } from "./page-shell"
 import type { NavSection } from "./site-header"
 
-/**
- * Página provisória (sem layout do Figma): título + conteúdo funcional mínimo.
- * Será substituída pela tela final quando o Figma estiver disponível.
- */
 export function ScreenPlaceholder({
   title,
   nav = "market",

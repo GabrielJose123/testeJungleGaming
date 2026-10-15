@@ -1,12 +1,5 @@
 import { defineConfig, devices } from "@playwright/test"
 
-/**
- * E2E com os mocks (MSW) ativos. Cada teste roda num contexto novo do navegador:
- * localStorage vazio → banco simulado no estado inicial (isolamento entre testes).
- *
- * Por padrão sobe o servidor de desenvolvimento; com E2E_BASE_URL aponta para outro
- * ambiente (ex.: o preview do build de demonstração ou o deploy).
- */
 const PORT = Number(process.env.E2E_PORT ?? 5180)
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`
 

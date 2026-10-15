@@ -8,17 +8,12 @@ import { SiteHeader, type NavSection } from "./site-header"
 
 interface PageShellProps {
   nav: NavSection
-  /** As telas Início, Login, Cadastro, Perfil e Carteiras usam o cabeçalho com divisor. */
   headerDivider?: boolean
-  /** Aba ativa na barra inferior mobile; `null` oculta a barra (telas com barra de ação própria). */
   mobileTab?: MobileTab | null
   children: React.ReactNode
   className?: string
 }
 
-/**
- * Moldura das telas: 1440 px com 120 px de margem lateral no desktop (Figma) e 24 px no mobile.
- */
 export function PageShell({ nav, headerDivider = false, mobileTab = "home", children, className }: PageShellProps) {
   const cartCount = useCartCount()
   const userName = useSession()?.user.name

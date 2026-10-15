@@ -29,7 +29,6 @@ export function errorResponse(error: MockApiError) {
   return HttpResponse.json<ApiErrorBody>({ error: error.toPayload() }, { status: error.status })
 }
 
-/** Lê o corpo JSON; corpo ausente ou inválido vira `{}` (e a validação acusa os campos). */
 export async function readJson<T extends object>(request: Request): Promise<Partial<T>> {
   try {
     const body: unknown = await request.json()
@@ -58,9 +57,6 @@ function resolveAuth(request: Request, mode: AuthMode): AuthContext | null {
   return auth
 }
 
-/**
- * Envolve um handler com: condições de rede do cenário → autenticação → tratamento de erros.
- */
 export function route<Params extends PathParams = PathParams>(
   kind: RouteKind,
   mode: "required",
