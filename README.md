@@ -167,5 +167,5 @@ src/
   session/      sessão, expiração, sync entre abas, redirects
 e2e/            Playwright
 lighthouse/     configuração e relatórios do Lighthouse
-docs/           especificação, design técnico, tokens e frames do Figma
+docs/           design técnico (contratos, cache, sessão) e tokens de design
 ```

@@ -144,7 +144,7 @@ Todo evento tem `eventId` (estável entre duplicatas), `resource { type, id }`, 
 
 O plano gratuito do MCP do Figma esgotou a cota mensal no meio da implementação. A Início foi feita a
 partir do contexto completo do Figma; as outras telas foram feitas a partir das capturas e da
-estrutura exportadas antes do limite (`docs/figma-export/`). Por isso:
+estrutura exportadas antes do limite. Por isso:
 
 | Tela | Fonte usada | Desvios conhecidos |
 | --- | --- | --- |
